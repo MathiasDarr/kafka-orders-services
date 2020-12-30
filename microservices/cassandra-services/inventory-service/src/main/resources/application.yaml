@@ -1,0 +1,30 @@
+server.port: 8090
+
+spring.cloud.stream:
+  function:
+    definition: process
+    bindings:
+      process-in-0: ride-requests
+      process-out-0: requests-out
+
+spring.cloud.stream.kafka.streams.binder:
+  brokers: localhost:9092
+  configuration:
+    schema.registry.url: http://localhost:8081
+    commit.interval.ms: 1000
+
+
+spring.cloud.stream.kafka.streams.binder.configuration:
+  default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+  default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+
+
+#  kafka:
+#    streams:
+#      binder:
+#        applicationId: hello-word-count-sample
+#        configuration:
+#          commit.interval.ms: 100
+#          default:
+#            key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+#            value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde

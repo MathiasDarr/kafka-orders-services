@@ -1,0 +1,10 @@
+{"namespace": "org.mddarr.products",
+ "type": "record",
+ "name": "AvroProduct",
+ "fields": [
+     {"name": "vendor", "type": "string"},
+     {"name": "product",   "type": "string"},
+     {"name": "price",  "type": "double"},
+     {"name": "inventory",  "type": "long"}
+ ]
+}

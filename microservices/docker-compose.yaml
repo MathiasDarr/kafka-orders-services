@@ -1,0 +1,45 @@
+version: '2'
+services:
+
+  inventory-service:
+    build: inventory-service/
+    container_name: inventory-service
+    depends_on:
+      - ecs-local-endpoints
+    command: java -jar app.jar
+    ports:
+      - 8080:8080
+    networks:
+      credentials_network:
+        ipv4_address: "169.254.170.3"
+    environment:
+      AWS_DEFAULT_REGION: "us-west-2"
+      AWS_CONTAINER_CREDENTIALS_RELATIVE_URI: "/creds"
+
+
+  ecs-local-endpoints:
+    # The Amazon ECS Local Container Endpoints Docker Image
+    image: amazon/amazon-ecs-local-container-endpoints
+    volumes:
+      # Mount /var/run so we can access docker.sock and talk to Docker
+      - /var/run:/var/run
+      # Mount the shared configuration directory, used by the AWS CLI and AWS SDKs
+      # On Windows, this directory can be found at "%UserProfile%\.aws"
+      - $HOME/.aws/:/home/.aws/
+    environment:
+      # define the home folder; credentials will be read from $HOME/.aws
+      HOME: "/home"
+      # You can change which AWS CLI Profile is used
+      AWS_PROFILE: "default"
+    networks:
+      credentials_network:
+        # This special IP address is recognized by the AWS SDKs and AWS CLI
+        ipv4_address: "169.254.170.2"
+
+networks:
+  credentials_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "169.254.170.0/24"
+          gateway: 169.254.170.1

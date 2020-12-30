@@ -1,0 +1,13 @@
+{
+  "type" : "record",
+  "name" : "Event3",
+  "namespace" : "org.mddarr.rides.event.dto",
+  "doc" : "Schema",
+  "fields" : [ {
+    "name" : "id",
+    "type" : [ "null", "int" ]
+  }, {
+    "name" : "timestamp",
+    "type" : "long"
+  } ]
+}
