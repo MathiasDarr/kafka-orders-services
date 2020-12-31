@@ -1,48 +1,29 @@
 version: '2'
 services:
-  #  mysql:
-  #    image: mariadb
-  #    ports:
-  #      - "3306:3306"
-  #    environment:
-  #      MYSQL_ROOT_PASSWORD: pwd
-  #      MYSQL_DATABASE: sample_mysql_db
-  #    volumes:
-  #      - data-volume:/var/lib/mysql
-
-
-  dynamodb:
-    image: amazon/dynamodb-local:latest
+  postgres:
+    image: debezium/example-postgres:${DEBEZIUM_VERSION}
     ports:
-      - "8000:8000"
-    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
-
-
-  cassandra:
-    container_name: cassandra
-    image: 'bitnami/cassandra:3'
-    ports:
-      - '7000:7000'
-      - '9042:9042'
-
-    volumes:
-      - 'cassandra_data:/bitnami'
+      - 5432:5432
     environment:
-      - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PASSWORD_SEEDER=yes
-      - CASSANDRA_PASSWORD=cassandra
-
-
-#  postgres:
-#    image: debezium/example-postgres:${DEBEZIUM_VERSION}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgresdb
+    container_name: postgres
+#
+#  cassandra:
+#    container_name: cassandra
+#    image: 'bitnami/cassandra:3'
 #    ports:
-#      - 5432:5432
+#      - '7000:7000'
+#      - '9042:9042'
+#
 #    environment:
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=postgres
-#      - POSTGRES_DB=postgresdb
-#    container_name: postgres
-
+#      - CASSANDRA_SEEDS=cassandra
+#      - CASSANDRA_PASSWORD_SEEDER=yes
+#      - CASSANDRA_PASSWORD=cassandra
+#      - CASSANDRA_TRANSPORT_PORT_NUMBER=7000
+#    volumes:
+#      -  'cassandra_data:/bitnami'
 
   zookeeper:
     image: debezium/zookeeper:${DEBEZIUM_VERSION}
@@ -111,9 +92,8 @@ services:
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components
 
-
 volumes:
-  cassandra_data:
-    driver: local
   postgres_data:
   data-volume: {}
+  cassandra_data:
+    driver: local

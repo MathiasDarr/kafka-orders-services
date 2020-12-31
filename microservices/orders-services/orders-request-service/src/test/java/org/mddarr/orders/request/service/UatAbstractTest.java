@@ -39,8 +39,6 @@ public abstract class UatAbstractTest {
     protected Consumer<String, AvroOrder> ordersConsumer;
 
 
-
-
     @Before
     public void setUp() {
         Map<String, Object> senderProps = kafkaProperties.buildProducerProperties();
