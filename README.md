@@ -1,8 +1,8 @@
-### ECommerce Kafka MicroServices ###
+# ECommerce Kafka MicroServices #
 
 This repository contains a Spring Boot microservices project. 
 
-## The microservices are implemented using the following technologies ##
+### The microservices are implemented using the following technologies ###
 * Spring Boot
 * Kafka, spring cloud Kafka binder, AVRO serialization
 * Implementations using Cassandra or alternatively using DynamoDB & Java AWS SDK
