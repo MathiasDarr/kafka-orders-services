@@ -24,7 +24,7 @@ def populate_products():
         image_url text,
         price float,
         category text,
-        inventory int,
+        inventory bigint,
         PRIMARY KEY((vendor, name)));
     """
     dbsession.execute(create_trip_data_point_table)
@@ -72,4 +72,6 @@ if __name__ == '__main__':
         dbsession.set_keyspace('ks1')
     except Exception as e:
         print(e)
+    populate_products()
     populate_orders()
+    print("THE CASSANDRA DATABASE HAS BEEN SEEDED")

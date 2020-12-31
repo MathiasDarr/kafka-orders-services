@@ -14,6 +14,8 @@ This repository contains a Spring Boot microservices project.
 
 * event-producer 
    - This module contains a main class which populates the inventory & orders topic
+        - datastax cassandra client for reading from database 
+        
 * orders-service
     - expose endpoints for placing orders
     - writes to 'orders' topic  
@@ -40,8 +42,6 @@ This repository contains a Spring Boot microservices project.
     * mvn clean package
 * Run the products service
     - 
-
-
 
 * Integration tests
     - test suite utilizes the python requests module to invoke the Lambda function via the API Gateway resouce & method

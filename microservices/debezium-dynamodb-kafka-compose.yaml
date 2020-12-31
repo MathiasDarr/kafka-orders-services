@@ -1,19 +1,10 @@
 version: '2'
 services:
-  cassandra:
-    container_name: cassandra
-    image: 'bitnami/cassandra:3'
+  dynamodb:
+    image: amazon/dynamodb-local:latest
     ports:
-      - '7000:7000'
-      - '9042:9042'
-
-    environment:
-      - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PASSWORD_SEEDER=yes
-      - CASSANDRA_PASSWORD=cassandra
-      - CASSANDRA_TRANSPORT_PORT_NUMBER=7000
-    volumes:
-      -  'cassandra_data:/bitnami'
+      - "8000:8000"
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
 
   zookeeper:
     image: debezium/zookeeper:${DEBEZIUM_VERSION}
