@@ -44,7 +44,7 @@ def populate_orders():
     create_orders_table = """CREATE TABLE IF NOT EXISTS orders(
         orderID text,
         customerID text,
-        quantities list<int>,
+        quantities list<bigint>,
         products list<text>,
         vendors list<text>,
         order_status text,
