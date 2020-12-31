@@ -1,8 +1,8 @@
 package org.mddarr.producer;
 
 public class Constants {
-    public static String DRIVERS_TOPIC = "drivers";
-    public static String RIDE_REQUEST_TOPIC ="ride-requests";
+    public static String ORDERS_TOPIC = "orders";
+    public static String PRODUCTS_TOPIC ="inventory";
 }
 
 
