@@ -1,4 +1,4 @@
-package org.mddarr.producer;
+package org.mddarr.producer.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -75,21 +75,24 @@ def create_customers_table():
         password text,
         purchases_per_month int,
         average_purchase_amount int,
+        city text,
         PRIMARY KEY(customerid));
         """
     dbsession.execute(create_customers_table)
 
 
+
+
+
+
 def populate_customers():
     CSV_FILE = 'data/customers/customers.csv'
-    insert_customer = """INSERT INTO customers(customerid, first_name, last_name, email, password, purchases_per_month, average_purchase_amount) VALUES(%s,%s,%s, %s, %s, %s, %s);"""
+    insert_customer = """INSERT INTO customers(customerid, first_name, last_name, email, password, purchases_per_month, average_purchase_amount, city) VALUES(%s,%s,%s, %s, %s, %s, %s, %s);"""
     with open(CSV_FILE, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
 
-            dbsession.execute(insert_customer, [row['customerid'], row['first_name'], row['last_name'], row['email'], row['password'], int(row['purchases_per_month']),int(row['average_purchase_amount'])])
-
-
+            dbsession.execute(insert_customer, [row['customerid'], row['first_name'], row['last_name'], row['email'], row['password'], int(row['purchases_per_month']),int(row['average_purchase_amount']), row['city']])
 
 
 if __name__ == '__main__':
@@ -103,9 +106,9 @@ if __name__ == '__main__':
     create_prooducts_table()
     create_customers_table()
 
-    populate_products()
+    # populate_products()
 
     # populate_products()
     # populate_orders()
-    # populate_customers()
+    populate_customers()
     print("THE CASSANDRA DATABASE HAS BEEN SEEDED")

@@ -1,15 +1,13 @@
 package org.mddarr.producer.repository;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import org.mddarr.producer.domain.Book;
-import org.mddarr.producer.domain.Product;
+import org.mddarr.producer.models.Product;
 
 public class ProductCassandraRepository {
 

@@ -3,8 +3,7 @@ package org.mddarr.producer.repository;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import org.mddarr.producer.domain.Order;
-import org.mddarr.producer.domain.Product;
+import org.mddarr.producer.models.Order;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -22,10 +22,15 @@
         <datastax-cassandra.version>4.1.0</datastax-cassandra.version>
     </properties>
 
-
-
-
     <dependencies>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+
         <dependency>
             <groupId>org.mddarr</groupId>
             <artifactId>avro-schema</artifactId>

@@ -1,6 +1,4 @@
-package org.mddarr.producer.domain;
-
-import java.util.UUID;
+package org.mddarr.producer.models;
 
 public class Product {
 

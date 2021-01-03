@@ -1,6 +1,7 @@
-package org.mddarr.producer.domain;
+package org.mddarr.producer.models;
 
 import java.util.List;
+
 
 public class Order {
     String customerID;

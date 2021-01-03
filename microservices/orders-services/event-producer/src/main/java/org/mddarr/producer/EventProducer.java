@@ -5,10 +5,15 @@ import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.mddarr.customers.AvroCustomer;
 import org.mddarr.orders.event.dto.AvroOrder;
 import org.mddarr.orders.event.dto.OrderState;
-import org.mddarr.producer.domain.Order;
-import org.mddarr.producer.domain.Product;
+import org.mddarr.producer.config.CassandraConnector;
+import org.mddarr.producer.kafka.templates.KafkaGenericTemplate;
+import org.mddarr.producer.models.Customer;
+import org.mddarr.producer.models.Order;
+import org.mddarr.producer.models.Product;
+import org.mddarr.producer.repository.CustomerRepository;
 import org.mddarr.producer.repository.OrderCassandraRepository;
 import org.mddarr.producer.repository.ProductCassandraRepository;
 import org.mddarr.producer.repository.KeyspaceRepository;
@@ -27,9 +32,38 @@ public class EventProducer {
     private static final Logger LOG = LoggerFactory.getLogger(EventProducer.class);
 
     public static void main(String[] args) throws Exception {
-        populateOrders();
+        populateCustomers();
         //        populateProducts();
     }
+    public static void populateCustomers(){
+
+        CassandraConnector connector = new CassandraConnector();
+        connector.connect("127.0.0.1", null);
+        Session session = connector.getSession();
+
+        KeyspaceRepository sr = new KeyspaceRepository(session);
+//      sr.createKeyspace("library", "SimpleStrategy", 1);
+        sr.useKeyspace("ks1");
+
+        KafkaGenericTemplate<AvroCustomer> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+        KafkaTemplate<String, AvroCustomer> driverKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+        driverKafkaTemplate.setDefaultTopic(Constants.CUSTOMERS_TOPIC);
+
+
+        CustomerRepository customerRepository = new CustomerRepository(session);
+        List<Customer> customers = customerRepository.selectAll();
+
+        customers.forEach(customer -> {
+            System.out.println("Writing customeer for '" + customer.getCustomerid() + "' to input topic " +
+                    Constants.CUSTOMERS_TOPIC);
+            driverKafkaTemplate.sendDefault(new AvroCustomer(customer.getCustomerid(), customer.getCity()));
+        });
+
+        connector.close();
+    }
+
+
+
     public static List<AvroProduct> mapAvroProducts(List<Product> products){
         List<AvroProduct> avroProducts = new ArrayList<>();
         for(Product product: products){
