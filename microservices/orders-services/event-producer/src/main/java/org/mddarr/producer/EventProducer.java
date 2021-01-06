@@ -13,10 +13,8 @@ import org.mddarr.producer.kafka.templates.KafkaGenericTemplate;
 import org.mddarr.producer.models.Customer;
 import org.mddarr.producer.models.Order;
 import org.mddarr.producer.models.Product;
-import org.mddarr.producer.repository.CustomerRepository;
-import org.mddarr.producer.repository.OrderRepository;
-import org.mddarr.producer.repository.ProductRepository;
-import org.mddarr.producer.repository.KeyspaceRepository;
+import org.mddarr.producer.models.Store;
+import org.mddarr.producer.repository.*;
 
 
 import org.mddarr.producer.runnable.PurchaseEventProducerThread;
@@ -38,8 +36,8 @@ public class EventProducer {
 
     private ExecutorService executor;
     private CountDownLatch latch;
-    private PurchaseEventProducerThread purchaseEventProducerThread;
-
+//    private PurchaseEventProducerThread purchaseEventProducerThread;
+    private List<PurchaseEventProducerThread>purchaseEventProducerThreads;
     public static void main(String[] args) throws Exception {
         EventProducer app = new EventProducer(args);
         app.start();
@@ -48,7 +46,7 @@ public class EventProducer {
     private EventProducer(String[] arguments){
         latch = new CountDownLatch(2);
         executor = Executors.newFixedThreadPool(2);
-        purchaseEventProducerThread = new PurchaseEventProducerThread(latch);
+//        purchaseEventProducerThread = new PurchaseEventProducerThread(latch);
     }
 
     public void start(){
@@ -59,9 +57,31 @@ public class EventProducer {
             }
         }));
 
-        log.info("Application started!");
-        executor.submit(purchaseEventProducerThread);
 
+        CassandraConnector connector = new CassandraConnector();
+        connector.connect("127.0.0.1", null);
+        Session session = connector.getSession();
+        KeyspaceRepository sr = new KeyspaceRepository(session);
+        sr.useKeyspace("ks1");
+
+
+
+
+        log.info("Application started!");
+        StoreRepository storeRepository = new StoreRepository(session);
+
+        List<Store> stores = storeRepository.selectAll();
+        stores.forEach(store->{
+            System.out.println("The store is " + store);
+        });
+
+        purchaseEventProducerThreads = new ArrayList<>();
+        stores.forEach(store->{
+            PurchaseEventProducerThread producerThread = new PurchaseEventProducerThread(latch, store);
+            executor.submit(producerThread);
+            purchaseEventProducerThreads.add(producerThread);
+        });
+        
         log.info("Stuff submit");
         try {
             log.info("Latch await");

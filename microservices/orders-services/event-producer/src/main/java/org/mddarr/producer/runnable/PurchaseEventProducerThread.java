@@ -12,6 +12,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.joda.time.DateTime;
 import org.mddarr.producer.Constants;
 import org.mddarr.producer.kafka.templates.KafkaGenericTemplate;
+import org.mddarr.producer.models.Store;
 import org.mddarr.products.AvroProduct;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -25,25 +26,27 @@ public class PurchaseEventProducerThread implements Runnable {
 
     private final CountDownLatch latch;
 
+    private Store store;
+
     private int recordCount;
 
     private KafkaTemplate<String, AvroProduct> purchaseEventKafkaTemplate;
 
+    public PurchaseEventProducerThread(CountDownLatch latch, Store store){
 
-    public PurchaseEventProducerThread(CountDownLatch latch){
         KafkaGenericTemplate<AvroProduct> kafkaGenericTemplate = new KafkaGenericTemplate<>();
         purchaseEventKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
         purchaseEventKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
+        this.store = store;
         this.latch = latch;
     }
-
     public void run() {
 
         int tweetCount = 0;
 
         while(latch.getCount() >0 ) {
             try {
-                System.out.println("IAM DFD");
+                System.out.println("I am publishing a purchase event from store " + store.getStoreid());
                 Thread.sleep(1000);
                     tweetCount +=1;
             } catch (Exception e) {
