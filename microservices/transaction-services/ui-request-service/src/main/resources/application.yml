@@ -2,9 +2,9 @@ spring:
   cloud:
     stream:
       bindings:
-        supplier-out-0:
+        orders_supplier-out-0:
           contentType: application/*+avro
-          destination: sensor-topic
+          destination: orders
       schemaRegistryClient:
         endpoint: http://localhost:8081
 #    schema:

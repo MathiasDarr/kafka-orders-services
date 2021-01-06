@@ -28,14 +28,14 @@ public class OrdersController {
         List<Long> quantities = new ArrayList(Arrays.asList(1L));
 
 
-//        AvroOrder avroOrder = AvroOrder.newBuilder()
-//                .setId(UUID.randomUUID().toString())
-//                .setState(OrderState.PENDING)
-//                .setVendors(vendors)
-//                .setQuantites(quantities)
-//                .setProducts(products)
-//                .setCustomerId("Charles Goodwin")
-//                .build();
+        AvroOrder avroOrder = AvroOrder.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setState(OrderState.PENDING)
+                .setVendors(vendors)
+                .setQuantites(quantities)
+                .setProducts(products)
+                .setCustomerId("Charles Goodwin")
+                .build();
         FirstOrder firstOrder = FirstOrder.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setCustomerId("Charles Goodwin")

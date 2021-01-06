@@ -24,8 +24,7 @@
      {"name": "state", "type": "OrderState"},
      {"name":"vendors", "type": { "type": "array", "items": "string" } },
      {"name":"products", "type": { "type": "array", "items": "string" } },
-     {"name":"quantites",   "type": { "type": "array", "items": "long" } },
-     {"name": "price", "type": "double"}
+     {"name":"quantites",   "type": { "type": "array", "items": "long" } }
  ]
 },
 
