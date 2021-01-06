@@ -22,18 +22,15 @@ public class OrderRequestController {
     BlockingQueue<AvroOrder> unbounded = new LinkedBlockingQueue<>();
 
     @PutMapping(value = "/orders")
-    public String sendMessage() {
-        List<String> vendors = new ArrayList(Arrays.asList("vendor1"));
-        List<String> products = new ArrayList(Arrays.asList("product1"));
-        List<Long> quantities = new ArrayList(Arrays.asList(1L));
+    public String sendMessage(@RequestBody OrderRequest orderRequest) {
 
         AvroOrder avroOrder = AvroOrder.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setState(OrderState.PENDING)
-                .setQuantites(quantities)
-                .setVendors(vendors)
-                .setProducts(products)
-                .setCustomerId("Charles Goodwin")
+                .setQuantites(orderRequest.getQuantities())
+                .setVendors(orderRequest.getVendors())
+                .setProducts(orderRequest.getProducts())
+                .setCustomerId(orderRequest.getCustomerID())
                 .build();
 
         unbounded.offer(avroOrder);
