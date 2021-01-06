@@ -19,6 +19,7 @@ import org.mddarr.producer.repository.ProductRepository;
 import org.mddarr.producer.repository.KeyspaceRepository;
 
 
+import org.mddarr.producer.runnable.PurchaseEventProducerThread;
 import org.mddarr.products.AvroProduct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +27,75 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class EventProducer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EventProducer.class);
+    private static final Logger log = LoggerFactory.getLogger(EventProducer.class);
+
+    private ExecutorService executor;
+    private CountDownLatch latch;
+    private PurchaseEventProducerThread purchaseEventProducerThread;
 
     public static void main(String[] args) throws Exception {
-//        populateOrders();
-        populateProducts();
+        EventProducer app = new EventProducer(args);
+        app.start();
     }
+
+    private EventProducer(String[] arguments){
+        latch = new CountDownLatch(2);
+        executor = Executors.newFixedThreadPool(2);
+        purchaseEventProducerThread = new PurchaseEventProducerThread(latch);
+    }
+
+    public void start(){
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (!executor.isShutdown()) {
+                log.info("Shutdown requested");
+                shutdown();
+            }
+        }));
+
+        log.info("Application started!");
+        executor.submit(purchaseEventProducerThread);
+
+        log.info("Stuff submit");
+        try {
+            log.info("Latch await");
+            latch.await();
+            log.info("Threads completed");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            shutdown();
+            log.info("Application closed succesfully");
+        }
+
+    }
+
+
+    private void shutdown() {
+        if (!executor.isShutdown()) {
+            log.info("Shutting down");
+            executor.shutdownNow();
+            try {
+                if (!executor.awaitTermination(2000, TimeUnit.MILLISECONDS)) { //optional *
+                    log.warn("Executor did not terminate in the specified time."); //optional *
+                    List<Runnable> droppedTasks = executor.shutdownNow(); //optional **
+                    log.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks will not be executed."); //optional **
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+
     public static void populateCustomers(){
 
         CassandraConnector connector = new CassandraConnector();
