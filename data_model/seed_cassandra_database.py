@@ -81,10 +81,6 @@ def create_customers_table():
     dbsession.execute(create_customers_table)
 
 
-
-
-
-
 def populate_customers():
     CSV_FILE = 'data/customers/customers.csv'
     insert_customer = """INSERT INTO customers(customerid, first_name, last_name, email, password, purchases_per_month, average_purchase_amount, city) VALUES(%s,%s,%s, %s, %s, %s, %s, %s);"""
@@ -106,9 +102,9 @@ if __name__ == '__main__':
     create_prooducts_table()
     create_customers_table()
 
-    # populate_products()
+    populate_products()
 
     # populate_products()
     # populate_orders()
-    populate_customers()
+    # populate_customers()
     print("THE CASSANDRA DATABASE HAS BEEN SEEDED")
