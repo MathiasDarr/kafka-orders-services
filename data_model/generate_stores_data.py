@@ -45,7 +45,6 @@ def populate_stores_inventory(stores):
         dbsession.execute(insert_trip_data_point, [store['storeid'], store['mean_neighberhood_income'], store['mean_customers_pery_day']])
 
 
-
 dbsession = createCassandraConnection()
 createKeySpace("ks1", dbsession)
 try:

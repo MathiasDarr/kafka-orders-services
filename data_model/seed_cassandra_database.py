@@ -6,6 +6,10 @@ This script creates & populates the users & the trips cassandra tables
 import os
 import csv
 from utilities.cassandra_utilities import createCassandraConnection, createKeySpace
+import numpy as np
+from numpy.random import choice
+
+
 
 def create_prooducts_table():
     create_products_table = """CREATE TABLE IF NOT EXISTS products(
@@ -13,6 +17,7 @@ def create_prooducts_table():
         name text, 
         image_url text,
         price float,
+        cost float,
         category text,
         inventory bigint,
         PRIMARY KEY((vendor, name)));
@@ -20,13 +25,25 @@ def create_prooducts_table():
     dbsession.execute(create_products_table)
 
 
+
 def populate_products_table(csv_file):
-    insert_trip_data_point = """INSERT INTO products(vendor, name, image_url, price, category, inventory) VALUES(%s,%s,%s,%s, %s, %s);"""
+    insert_trip_data_point = """INSERT INTO products(vendor, name, image_url, price, cost,category, inventory) VALUES(%s,%s,%s,%s,%s, %s, %s);"""
 
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            dbsession.execute(insert_trip_data_point, [row['vendor'], row['name'], row['image_url'], float(row['price']),row['category'], 3])
+
+            price = float(row['price'])
+
+            percent_profit_draw = choice([.05, .1, .2, .25, .3], 1, p=[.2, .3, .3, .1, .1])
+            mean_cost = price * (1-percent_profit_draw[0])
+            cost = mean_cost + np.random.normal(5)
+
+            #
+            # cost = np.random.normal(price * (1-percent_profit), price * random_std)
+
+
+            dbsession.execute(insert_trip_data_point, [row['vendor'], row['name'], row['image_url'], float(row['price']), cost,row['category'], 3])
 
 def populate_products():
     CSV_DIRECTORY = 'data/products'

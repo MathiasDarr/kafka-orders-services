@@ -16,6 +16,8 @@ fake = Faker()
 fake.random.seed(4321)
 
 
+
+
 def generate_customer_data():
     keys = ['customerid', 'first_name', 'last_name', 'email', 'password', 'city', 'seats', 'purchases_per_month', 'average_purchase_amount']
     cities = ['Seattle', 'Portland', 'Los Angeles', 'San Fransisco']
