@@ -19,15 +19,8 @@
 		<java.version>11</java.version>
 	</properties>
 	<modules>
-		<module>orders-services</module>
+        <module>transaction-services</module>
 
-<!--		<module>dynamo-services</module>-->
-<!--		<module>cassandra-services</module>-->
-<!--		<module>avro-schema</module>-->
-<!--		<module>orders-service</module>-->
-<!--		<module>inventory-service</module>-->
-<!--		<module>service-utilities</module>-->
-<!--		<module>ride-services</module>-->
 	</modules>
 
 	<repositories>

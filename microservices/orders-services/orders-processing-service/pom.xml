@@ -22,12 +22,24 @@
 
 	<dependencies>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.mddarr</groupId>
 			<artifactId>avro-schema</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
@@ -66,6 +78,21 @@
 			<version>5.3.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.10.5</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
@@ -102,7 +129,6 @@
 			<artifactId>kafka-schema-registry-client</artifactId>
 			<version>${confluent.version}</version>
 		</dependency>
-
 
 
 

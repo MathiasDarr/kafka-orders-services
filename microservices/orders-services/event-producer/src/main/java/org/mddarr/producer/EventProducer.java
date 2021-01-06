@@ -39,9 +39,36 @@ public class EventProducer {
 //    private PurchaseEventProducerThread purchaseEventProducerThread;
     private List<PurchaseEventProducerThread>purchaseEventProducerThreads;
     public static void main(String[] args) throws Exception {
-        EventProducer app = new EventProducer(args);
-        app.start();
+//        EventProducer app = new EventProducer(args);
+//        app.start();
+        populateSingleOrder();
     }
+
+    public static void populateSingleOrder() throws Exception {
+
+        KafkaGenericTemplate<AvroOrder> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+        KafkaTemplate<String, AvroOrder> ordersKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+        ordersKafkaTemplate.setDefaultTopic(Constants.ORDERS_TOPIC);
+        List<String> vendors = new ArrayList(Arrays.asList("vendor1"));
+        List<String> products = new ArrayList(Arrays.asList("product1"));
+        List<Long> quantities = new ArrayList(Arrays.asList(1L));
+
+
+        AvroOrder avroOrder = AvroOrder.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setState(OrderState.PENDING)
+                .setVendors(vendors)
+                .setQuantites(quantities)
+                .setProducts(products)
+                .setPrice(120)
+                .setCustomerId("Charles Goodwin")
+                .build();
+        System.out.println("i sent an order");
+        ordersKafkaTemplate.sendDefault(avroOrder);
+
+    }
+
+
 
     private EventProducer(String[] arguments){
         latch = new CountDownLatch(2);
@@ -81,7 +108,7 @@ public class EventProducer {
             executor.submit(producerThread);
             purchaseEventProducerThreads.add(producerThread);
         });
-        
+
         log.info("Stuff submit");
         try {
             log.info("Latch await");
