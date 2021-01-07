@@ -80,8 +80,6 @@ public class EventProducer {
     private List<PurchaseEventProducerThread>purchaseEventProducerThreads;
 
     public static void main(String[] args) throws Exception {
-
-
         populatePurchaseEvents();
 
 //        populateProducts();
@@ -92,11 +90,10 @@ public class EventProducer {
     }
 
     public static void populatePurchaseEvents() throws InterruptedException {
-//
-//        KafkaGenericTemplate<AvroPurchaseEvent> kafkaGenericTemplate = new KafkaGenericTemplate<>();
-//        KafkaTemplate<String, AvroPurchaseEvent> ordersKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
-//        ordersKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
-//
+        /*
+        This method generates simulates purchases by randomly selecting products weighted by their popularity.
+        Publishes these purchase events to kafka with avro serialization as AvroPurchaseEvents.
+         */
         CassandraConnector connector = new CassandraConnector();
         connector.connect("127.0.0.1", null);
         Session session = connector.getSession();
@@ -113,18 +110,35 @@ public class EventProducer {
             weighted_product_purchases.addEntry(product,product.getPopularity());
         }
 
+        KafkaGenericTemplate<AvroPurchaseEvent> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+        KafkaTemplate<String, AvroPurchaseEvent> purchaseEventKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+        purchaseEventKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
+
         while(true){
-            System.out.println("THE Product SELECTED WAS " + weighted_product_purchases.getRandom());
+            Product product = weighted_product_purchases.getRandom();
+            System.out.println("THE Product SELECTED WAS " + product);
+
+            AvroPurchaseEvent avroPurchaseEvent = AvroPurchaseEvent
+                    .newBuilder()
+                    .setProduct(product.getProduct())
+                    .setVendor(product.getVendor())
+                    .build();
+
+            purchaseEventKafkaTemplate.sendDefault(avroPurchaseEvent);
+
             Thread.sleep(500);
         }
 
     }
 
     public static void populateSingleOrder() throws Exception {
-
+        /*
+        This method populates a single hardcoded order to kafka
+         */
         KafkaGenericTemplate<AvroOrder> kafkaGenericTemplate = new KafkaGenericTemplate<>();
         KafkaTemplate<String, AvroOrder> ordersKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
         ordersKafkaTemplate.setDefaultTopic(Constants.ORDERS_TOPIC);
+
         List<String> vendors = new ArrayList(Arrays.asList("vendor1"));
         List<String> products = new ArrayList(Arrays.asList("product1"));
         List<Long> quantities = new ArrayList(Arrays.asList(1L));
@@ -144,7 +158,6 @@ public class EventProducer {
     }
 
 
-
     private EventProducer(String[] arguments){
         latch = new CountDownLatch(2);
         executor = Executors.newFixedThreadPool(2);
@@ -152,6 +165,9 @@ public class EventProducer {
     }
 
     public void start(){
+        /*
+        This method starts a multithreaded application.
+         */
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (!executor.isShutdown()) {
                 log.info("Shutdown requested");
@@ -159,15 +175,11 @@ public class EventProducer {
             }
         }));
 
-
         CassandraConnector connector = new CassandraConnector();
         connector.connect("127.0.0.1", null);
         Session session = connector.getSession();
         KeyspaceRepository sr = new KeyspaceRepository(session);
         sr.useKeyspace("ks1");
-
-
-
 
         log.info("Application started!");
         StoreRepository storeRepository = new StoreRepository(session);

@@ -2,8 +2,7 @@
  "type": "record",
  "name": "AvroPurchaseEvent",
  "fields": [
-     {"name": "customer_id",   "type": "long"},
-     {"name": "product_id",   "type": "string"},
-     {"name": "quantity", "type": "long"}
+     {"name": "product",   "type": "string"},
+     {"name": "vendor", "type": "string"}
  ]
 }
