@@ -9,6 +9,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.mddarr.materializedview.templates.KafkaGenericTemplate;
 import org.mddarr.products.AvroPurchaseCount;
 import org.mddarr.products.AvroPurchaseEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,24 +41,24 @@ public class MaterializedViewApplication {
 
 
 @Component
-class OrderView {
-
-	@Autowired
-	public void buildOrdersView(StreamsBuilder builder) {
-		builder.table("orders",
-				Consumed.with(Serdes.Integer(), Serdes.String()),
-				Materialized.as("orders-store"));
-	}
-}
-
-@Component
 @RequiredArgsConstructor
 class Producer {
 
 	private final KafkaTemplate<Integer, String> kafkaTemplate;
 
+
 	@EventListener(ApplicationStartedEvent.class)
 	public void produce() {
+		KafkaGenericTemplate<AvroPurchaseCount> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+		KafkaTemplate<String, AvroPurchaseCount> kafkaPurchaseCountTemplate = kafkaGenericTemplate.getKafkaTemplate();
+		kafkaPurchaseCountTemplate.setDefaultTopic(Constants.PURCHASE_COUNTS_TOPIC);
+		AvroPurchaseCount avroPurchaseCount = AvroPurchaseCount.newBuilder()
+				.setProductId("product1")
+				.setCount(6)
+				.build();
+
+		kafkaPurchaseCountTemplate.sendDefault(avroPurchaseCount);
+
 		kafkaTemplate.send("orders", 1, "iPad");
 		kafkaTemplate.send("orders", 2, "iPhone");
 		kafkaTemplate.send("orders", 1, "iPad, Airpods");
@@ -65,17 +66,18 @@ class Producer {
 	}
 }
 
-@RestController
-@RequiredArgsConstructor
-class MyIqController {
 
-	private final StreamsBuilderFactoryBean streamsBuilderFactoryBean;
-
-	@GetMapping("/iq/{id}")
-	public String getOrder(@PathVariable final Integer id) {
-		final KafkaStreams kafkaStreams = streamsBuilderFactoryBean.getKafkaStreams();
-		final ReadOnlyKeyValueStore<Integer, String> store =
-				kafkaStreams.store(fromNameAndType("orders-store", keyValueStore()));
-		return store.get(id);
-	}
-}
+//@RestController
+//@RequiredArgsConstructor
+//class MyIqController {
+//
+//	private final StreamsBuilderFactoryBean streamsBuilderFactoryBean;
+//
+//	@GetMapping("/iq/{id}")
+//	public String getOrder(@PathVariable final Integer id) {
+//		final KafkaStreams kafkaStreams = streamsBuilderFactoryBean.getKafkaStreams();
+//		final ReadOnlyKeyValueStore<Integer, String> store =
+//				kafkaStreams.store(fromNameAndType("orders-store", keyValueStore()));
+//		return store.get(id);
+//	}
+//}

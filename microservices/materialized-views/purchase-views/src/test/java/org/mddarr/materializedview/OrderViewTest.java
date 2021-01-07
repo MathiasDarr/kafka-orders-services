@@ -6,6 +6,7 @@ import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.junit.jupiter.api.Test;
+import org.mddarr.materializedview.views.OrderView;
 
 import java.util.Map;
 import java.util.Properties;
