@@ -30,62 +30,58 @@ public class MaterializedViewApplication {
 		SpringApplication.run(MaterializedViewApplication.class, args);
 	}
 
-	@Bean
-	public BiConsumer<KTable<String, AvroProduct>, KStream<String, AvroPurchaseEvent>> process_products() {
-		return((avroProductKTable, purchaseEventKStream) -> {
+	private static class PurchaseStreamsMaterializedViewApplication{
 
-			// Configure the SpecificAvroSerdes
-			final Map<String, String> serdeConfig = Collections.singletonMap(
-					AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+		private static final String PURCHASE_EVENT_COUNT_STORE = "product-purchase-count";
 
-			final SpecificAvroSerde<AvroPurchaseEvent> playEventSerde = new SpecificAvroSerde<>();
-			playEventSerde.configure(serdeConfig, false);
+		@Bean
+		public BiConsumer<KTable<String, AvroProduct>, KStream<String, AvroPurchaseEvent>> process_products() {
+			return((avroProductKTable, purchaseEventKStream) -> {
 
-			final SpecificAvroSerde<AvroProduct> keySongSerde = new SpecificAvroSerde<>();
-			keySongSerde.configure(serdeConfig, true);
+				// Configure the SpecificAvroSerdes
+				final Map<String, String> serdeConfig = Collections.singletonMap(
+						AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
 
-			final SpecificAvroSerde<AvroProduct> productAvroSerde = new SpecificAvroSerde<>();
-			productAvroSerde.configure(serdeConfig, false);
+				final SpecificAvroSerde<AvroPurchaseEvent> playEventSerde = new SpecificAvroSerde<>();
+				playEventSerde.configure(serdeConfig, false);
 
-			final SpecificAvroSerde<AvroPurchaseCount> songPlayCountSerde = new SpecificAvroSerde<>();
-			songPlayCountSerde.configure(serdeConfig, false);
+				final SpecificAvroSerde<AvroProduct> keySongSerde = new SpecificAvroSerde<>();
+				keySongSerde.configure(serdeConfig, true);
 
-			final KStream<String, AvroPurchaseEvent> purchaseByItemID =
-					purchaseEventKStream
-							// repartition based on song id
-							.map((key, value) -> KeyValue.pair(value.getVendor() + value.getProduct(), value));
-			purchaseByItemID.foreach((k,v)->{
-				System.out.println(v);
+				final SpecificAvroSerde<AvroProduct> productAvroSerde = new SpecificAvroSerde<>();
+				productAvroSerde.configure(serdeConfig, false);
+
+				final SpecificAvroSerde<AvroPurchaseCount> songPlayCountSerde = new SpecificAvroSerde<>();
+				songPlayCountSerde.configure(serdeConfig, false);
+
+				final KStream<String, AvroPurchaseEvent> purchaseByItemID =
+						purchaseEventKStream
+								// repartition based on product id
+								.map((key, value) -> KeyValue.pair(value.getVendor() + value.getProduct(), value));
+				purchaseByItemID.foreach((k,v)->{
+					System.out.println(v);
+				});
+
+				final KStream<String, AvroProduct> pruchaseStream = purchaseByItemID
+						.leftJoin(avroProductKTable,(value, product) -> product,
+						Joined.with(Serdes.String(),playEventSerde, productAvroSerde));
+
+				final KTable<AvroProduct, Long> productsPurchaseCounts = pruchaseStream.groupBy((productid, product) -> product
+						,Grouped.with(keySongSerde, productAvroSerde))
+						.count(Materialized.<AvroProduct, Long, KeyValueStore<Bytes, byte[]>>as(PURCHASE_EVENT_COUNT_STORE)
+							.withKeySerde(productAvroSerde)
+							.withValueSerde(Serdes.Long()));
+
+				System.out.println("HEAEEEEY AAA");
+
 			});
-
-			purchaseByItemID.leftJoin(avroProductKTable,(value,song)->song,Joined.with(Serdes.String(),playEventSerde, productAvroSerde));
-
+		}
 
 
-
-			//			final KStream<String, AvroProduct> productPurchases = purchaseByItemID.leftJoin(avroProductKTable,
-//					(value1, song) -> song,
-//					Joined.with(Serdes.Long(), playEventSerde, valueSongSerde));
-
-
-
-
-			System.out.println("HEAEEEEY AAA");
-
-
-//			final KTable<Song, Long> songPlayCounts = songPlays.groupBy((songId, song) -> song,
-//					Serialized.with(keySongSerde, productAvroSerde))
-//					.count(Materialized.<Song, Long, KeyValueStore<Bytes, byte[]>>as(SONG_PLAY_COUNT_STORE)
-//							.withKeySerde(productAvroSerde)
-//							.withValueSerde(Serdes.Long()));
-//
-//
-//
-
-
-
-		});
 	}
+
+
+
 
 
 }
