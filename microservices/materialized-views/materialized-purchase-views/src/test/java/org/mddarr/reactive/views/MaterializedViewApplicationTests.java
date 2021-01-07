@@ -21,5 +21,8 @@ import java.util.Properties;
 @SpringBootTest
 class MaterializedViewApplicationTests {
 
+    @Test
+    public void test(){
 
+    }
 }
