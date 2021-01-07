@@ -15,7 +15,8 @@
     <modules>
         <module>avro-schema</module>
         <module>event-producer</module>
-        <module>purchase-views</module>
+        <module>clean-views</module>
+<!--        <module>clean-views</module>-->
 
 <!--        <module>materialized-purchase-views</module>-->
 <!--        <module>materialized-view</module>-->
