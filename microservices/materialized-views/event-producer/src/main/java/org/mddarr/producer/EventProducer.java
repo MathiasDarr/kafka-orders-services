@@ -71,7 +71,6 @@ public class EventProducer {
         }
     }
 
-
     private static final Logger log = LoggerFactory.getLogger(EventProducer.class);
 
     private ExecutorService executor;
@@ -124,11 +123,11 @@ public class EventProducer {
                     .setVendor(product.getVendor())
                     .build();
 
-            purchaseEventKafkaTemplate.sendDefault(avroPurchaseEvent);
+            // Concatenate the vendor & the product as the key.. The value will contain the same information ..
+            purchaseEventKafkaTemplate.sendDefault(avroPurchaseEvent.getVendor() + avroPurchaseEvent.getProduct(),avroPurchaseEvent);
 
             Thread.sleep(500);
         }
-
     }
 
     public static void populateSingleOrder() throws Exception {
@@ -154,7 +153,6 @@ public class EventProducer {
                 .build();
         System.out.println("i sent an order");
         ordersKafkaTemplate.sendDefault(avroOrder);
-
     }
 
 
@@ -207,9 +205,7 @@ public class EventProducer {
             shutdown();
             log.info("Application closed succesfully");
         }
-
     }
-
 
     private void shutdown() {
         if (!executor.isShutdown()) {
@@ -226,8 +222,6 @@ public class EventProducer {
             }
         }
     }
-
-
 
 
     public static void populateCustomers(){

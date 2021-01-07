@@ -6,6 +6,9 @@ spring.cloud.stream:
 
 spring.cloud.stream.bindings.process_products-in-0:
   destination: products
+spring.cloud.stream.bindings.process_products-in-1:
+  destination: purchases
+
 
 spring:
   cloud:
