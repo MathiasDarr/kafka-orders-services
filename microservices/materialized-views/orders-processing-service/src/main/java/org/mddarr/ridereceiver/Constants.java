@@ -8,6 +8,6 @@ public class Constants {
     public static String TOP_FIVE_KEY = "all";
     public static String TOP_FIVE_PRODUCTS_STORE = "top-five-products";
     public static String ALL_PRODUCTS = "all-products";
-
+    static final String PURCHASE_EVENT_COUNT_STORE = "product-purchase-count";
 
 }

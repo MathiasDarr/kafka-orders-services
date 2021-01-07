@@ -15,8 +15,9 @@
     <modules>
 <!--        <module>kafka-streams-word-count</module>-->
         <module>avro-schema</module>
-        <module>event-producer</module>
-        <module>orders-processing-service</module>
+<!--        <module>event-producer</module>-->
+<!--        <module>orders-processing-service</module>-->
+        <module>materialized-view</module>
 <!--        <module>kafka-streams-interactive-query-advanced</module>-->
     </modules>
 
