@@ -1,0 +1,12 @@
+spring.application.name: orders-matview
+
+  # Kafka
+spring.kafka.properties.sasl.mechanism: PLAIN
+spring.kafka.properties.bootstrap.servers: localhost:9092
+
+  # Kafka Producer | KafkaTemplate
+spring.kafka.producer.key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+spring.kafka.producer.value-serializer: org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.streams.replication-factor: 1
+
+

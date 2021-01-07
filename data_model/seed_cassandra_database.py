@@ -8,10 +8,11 @@ import csv
 from utilities.cassandra_utilities import createCassandraConnection, createKeySpace
 import numpy as np
 from numpy.random import choice
+import uuid
 
-
-def create_prooducts_table():
-    create_products_table = """CREATE TABLE IF NOT EXISTS products(
+def create_productsid_table():
+    create_productsid_table = """CREATE TABLE IF NOT EXISTS productsid(
+        productid text,
         vendor text,
         name text, 
         image_url text,
@@ -20,13 +21,13 @@ def create_prooducts_table():
         category text,
         popularity int,
         inventory bigint,
-        PRIMARY KEY((vendor, name)));
+        PRIMARY KEY(productid)) ;
     """
-    dbsession.execute(create_products_table)
+    dbsession.execute(create_productsid_table)
 
 
-def populate_products_table(csv_file):
-    insert_trip_data_point = """INSERT INTO products(vendor, name, image_url, price, cost,category,popularity, inventory) VALUES(%s,%s,%s,%s,%s,%s, %s, %s);"""
+def populate_productsid_table(csv_file):
+    insert_trip_data_point = """INSERT INTO productsid(productid, vendor, name, price, cost, category, popularity, inventory) VALUES(%s,%s,%s,%s,%s,%s, %s, %s);"""
 
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -38,10 +39,10 @@ def populate_products_table(csv_file):
                 popularity = 15
             mean_cost = price * (1-percent_profit_draw[0])
             cost = mean_cost + np.random.normal(5)
-            dbsession.execute(insert_trip_data_point, [row['vendor'], row['name'], row['image_url'], float(row['price']), cost,row['category'],popularity, 3])
+            dbsession.execute(insert_trip_data_point, [str(uuid.uuid4()),row['vendor'], row['name'], float(row['price']), cost,row['category'],popularity, 3])
 
 
-def populate_products():
+def populate_productsid():
     CSV_DIRECTORY = 'data/products'
     csv_files = []
     for file in os.listdir(CSV_DIRECTORY):
@@ -49,7 +50,56 @@ def populate_products():
         if file_path.split('.')[-1] == 'csv':
             csv_files.append(file_path)
     for file in csv_files:
-        populate_products_table(file)
+        populate_productsid_table(file)
+
+
+
+
+
+
+#
+#
+#
+# def create_prooducts_table():
+#     create_products_table = """CREATE TABLE IF NOT EXISTS products(
+#         vendor text,
+#         name text,
+#         image_url text,
+#         price float,
+#         cost float,
+#         category text,
+#         popularity int,
+#         inventory bigint,
+#         PRIMARY KEY((vendor, name)));
+#     """
+#     dbsession.execute(create_products_table)
+#
+#
+# def populate_products_table(csv_file):
+#     insert_trip_data_point = """INSERT INTO products(vendor, name, image_url, price, cost,category,popularity, inventory) VALUES(%s,%s,%s,%s,%s,%s, %s, %s);"""
+#
+#     with open(csv_file, newline='') as csvfile:
+#         reader = csv.DictReader(csvfile)
+#         for row in reader:
+#             price = float(row['price'])
+#             percent_profit_draw = choice([.05, .1, .2, .25, .3], 1, p=[.2, .3, .3, .1, .1])
+#             popularity = int(np.random.normal(50,15))
+#             if popularity < 15:
+#                 popularity = 15
+#             mean_cost = price * (1-percent_profit_draw[0])
+#             cost = mean_cost + np.random.normal(5)
+#             dbsession.execute(insert_trip_data_point, [row['vendor'], row['name'], row['image_url'], float(row['price']), cost,row['category'],popularity, 3])
+#
+#
+# def populate_products():
+#     CSV_DIRECTORY = 'data/products'
+#     csv_files = []
+#     for file in os.listdir(CSV_DIRECTORY):
+#         file_path = '{}/{}'.format(CSV_DIRECTORY, file)
+#         if file_path.split('.')[-1] == 'csv':
+#             csv_files.append(file_path)
+#     for file in csv_files:
+#         populate_products_table(file)
 
 
 def create_orders_table():
@@ -112,10 +162,10 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
     create_orders_table()
-    create_prooducts_table()
+    create_productsid_table()
     create_customers_table()
 
-    populate_products()
+    populate_productsid()
 
     # populate_products()
     # populate_orders()

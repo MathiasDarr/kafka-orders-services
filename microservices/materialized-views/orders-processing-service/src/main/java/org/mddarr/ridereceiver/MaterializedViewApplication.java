@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ import java.util.function.Consumer;
 
 @SpringBootApplication
 @EnableKafkaStreams
+@EnableKafka
 public class MaterializedViewApplication {
 
 	public static void main(String[] args) {

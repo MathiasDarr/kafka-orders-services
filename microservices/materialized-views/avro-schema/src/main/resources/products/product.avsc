@@ -1,3 +1,5 @@
+[
+
 {"namespace": "org.mddarr.products",
  "type": "record",
  "name": "AvroProduct",
@@ -7,4 +9,18 @@
      {"name": "price",  "type": "double"},
      {"name": "inventory",  "type": "long"}
  ]
+},
+
+{"namespace": "org.mddarr.products",
+ "type": "record",
+ "name": "AvroProductID",
+ "fields": [
+     {"name": "productid", "type": "string"},
+     {"name": "vendor", "type": "string"},
+     {"name": "product",   "type": "string"},
+     {"name": "price",  "type": "double"},
+     {"name": "inventory",  "type": "long"}
+ ]
 }
+
+]

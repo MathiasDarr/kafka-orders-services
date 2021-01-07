@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.mddarr.customers.AvroCustomer;
 
+import org.mddarr.producer.models.*;
 import org.mddarr.products.AvroPurchaseCount;
 import org.mddarr.products.AvroPurchaseEvent;
 
@@ -16,10 +17,6 @@ import org.mddarr.orders.event.dto.AvroOrder;
 import org.mddarr.orders.event.dto.OrderState;
 import org.mddarr.producer.config.CassandraConnector;
 import org.mddarr.producer.kafka.templates.KafkaGenericTemplate;
-import org.mddarr.producer.models.Customer;
-import org.mddarr.producer.models.Order;
-import org.mddarr.producer.models.Product;
-import org.mddarr.producer.models.Store;
 import org.mddarr.producer.repository.*;
 
 
@@ -79,7 +76,7 @@ public class EventProducer {
     private List<PurchaseEventProducerThread>purchaseEventProducerThreads;
 
     public static void main(String[] args) throws Exception {
-        populatePurchaseEvents();
+        populateProductPurchaseCount();
 
 //        populateProducts();
 
@@ -87,6 +84,95 @@ public class EventProducer {
 //        app.start();
 
     }
+    public static void populateProductIDPurchaseEvents() throws InterruptedException {
+        /*
+        This method generates simulates purchases by randomly selecting products weighted by their popularity.
+        Publishes these purchase events to kafka with avro serialization as AvroPurchaseEvents.
+         */
+        CassandraConnector connector = new CassandraConnector();
+        connector.connect("127.0.0.1", null);
+        Session session = connector.getSession();
+        KeyspaceRepository sr = new KeyspaceRepository(session);
+        sr.useKeyspace("ks1");
+
+        ProductIdRepository productRepository = new ProductIdRepository(session);
+
+        List<ProductID> products = productRepository.selectAll();
+
+        WeightedRandomBag<ProductID> weighted_product_purchases = new EventProducer.WeightedRandomBag<>();
+
+        for(ProductID product: products){
+            weighted_product_purchases.addEntry(product,product.getPopularity());
+        }
+
+        KafkaGenericTemplate<AvroPurchaseEvent> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+        KafkaTemplate<String, AvroPurchaseEvent> purchaseEventKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+        purchaseEventKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
+
+        while(true){
+            ProductID product = weighted_product_purchases.getRandom();
+            System.out.println("THE Product SELECTED WAS " + product);
+
+            String productid = product.getProductid();
+            AvroPurchaseEvent avroPurchaseEvent = AvroPurchaseEvent
+                    .newBuilder()
+                    .setProduct(product.getProduct())
+                    .setVendor(product.getVendor())
+                    .build();
+
+            // Concatenate the vendor & the product as the key.. The value will contain the same information ..
+            purchaseEventKafkaTemplate.sendDefault(avroPurchaseEvent.getVendor() + avroPurchaseEvent.getProduct(),avroPurchaseEvent);
+
+            Thread.sleep(500);
+        }
+    }
+
+    public static void populateProductPurchaseCount() throws InterruptedException {
+        CassandraConnector connector = new CassandraConnector();
+        connector.connect("127.0.0.1", null);
+        Session session = connector.getSession();
+        KeyspaceRepository sr = new KeyspaceRepository(session);
+        sr.useKeyspace("ks1");
+
+        ProductIdRepository productRepository = new ProductIdRepository(session);
+
+        List<ProductID> products = productRepository.selectAll();
+
+        WeightedRandomBag<ProductID> weighted_product_purchases = new EventProducer.WeightedRandomBag<>();
+
+        Map<String, Integer> productPurchaseCounts = new HashMap<>();
+
+        for(ProductID product: products){
+            String produtid = product.getProductid();
+            productPurchaseCounts.put(produtid, 0);
+            weighted_product_purchases.addEntry(product,product.getPopularity());
+        }
+
+        KafkaGenericTemplate<AvroPurchaseCount> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+        KafkaTemplate<String, AvroPurchaseCount> productKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+        productKafkaTemplate.setDefaultTopic(Constants.PURCHASE_COUNTS_TOPIC);
+
+        while(true){
+            ProductID product = weighted_product_purchases.getRandom();
+
+            String productid = product.getProductid();
+            Integer count = productPurchaseCounts.get(productid)+1;
+            System.out.println("THE Product SELECTED WAS " + product + " and it has been purchased " + count);
+
+            AvroPurchaseCount avroPurchaseCount = AvroPurchaseCount.newBuilder()
+                    .setCount(count)
+                    .setProductId(productid)
+                    .build();
+
+            productPurchaseCounts.replace(productid, count);
+            // Concatenate the vendor & the product as the key.. The value will contain the same information ..
+            productKafkaTemplate.sendDefault(avroPurchaseCount);
+
+            Thread.sleep(100);
+        }
+    }
+
+
 
     public static void populatePurchaseEvents() throws InterruptedException {
         /*
