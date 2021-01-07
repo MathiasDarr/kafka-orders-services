@@ -20,7 +20,7 @@
     <modules>
         <module>event-producer</module>
         <module>orders-processing-service</module>
-
+        <module></module>
 <!--        <module>inventory-service</module>-->
 <!--        <module>orders-request-service</module>-->
 <!--        <module>drivers-service</module>-->

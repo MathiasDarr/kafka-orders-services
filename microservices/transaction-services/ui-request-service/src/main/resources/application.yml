@@ -7,10 +7,5 @@ spring:
           destination: orders
       schemaRegistryClient:
         endpoint: http://localhost:8081
-#    schema:
-#      avro:
-#        schema-locations: classpath:avro/orders.avsc
-#        subjectNamePrefix:  sensor-topic-value
-#        subjectNamingStrategy: org.springframework.cloud.schema.registry.avro.SubjectPrefixOnlyNamingStrategy
 
 server.port: 9009

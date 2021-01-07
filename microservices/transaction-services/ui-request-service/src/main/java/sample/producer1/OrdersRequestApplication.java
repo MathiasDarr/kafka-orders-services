@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class OrdersRequestApplication {
 
 	@Autowired
-	BlockingQueue<AvroOrder> unbounded = new LinkedBlockingQueue<>();
+	BlockingQueue<AvroOrder> unbounded;
 
 	public static void main(String[] args) {
 		SpringApplication.run(OrdersRequestApplication.class, args);
