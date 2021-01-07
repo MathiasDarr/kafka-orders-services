@@ -91,39 +91,34 @@ public class EventProducer {
 
     }
 
-
     public static void populatePurchaseEvents() throws InterruptedException {
 //
 //        KafkaGenericTemplate<AvroPurchaseEvent> kafkaGenericTemplate = new KafkaGenericTemplate<>();
 //        KafkaTemplate<String, AvroPurchaseEvent> ordersKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
 //        ordersKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
 //
-//        CassandraConnector connector = new CassandraConnector();
-//        connector.connect("127.0.0.1", null);
-//        Session session = connector.getSession();
-//        KeyspaceRepository sr = new KeyspaceRepository(session);
-//        sr.useKeyspace("ks1");
-//
-//        ProductRepository productRepository = new ProductRepository(session);
-//
-//        List<Product> products = productRepository.selectAll();
+        CassandraConnector connector = new CassandraConnector();
+        connector.connect("127.0.0.1", null);
+        Session session = connector.getSession();
+        KeyspaceRepository sr = new KeyspaceRepository(session);
+        sr.useKeyspace("ks1");
 
-        WeightedRandomBag<String> processes = new EventProducer.WeightedRandomBag<>();
+        ProductRepository productRepository = new ProductRepository(session);
 
-        processes.addEntry("process1", 5.0);
-        processes.addEntry("process2", 20.0);
-        processes.addEntry("process3", 45.0);
-        processes.addEntry("process4", 20.0);
-        processes.addEntry("process5", 10.2);
+        List<Product> products = productRepository.selectAll();
+
+        WeightedRandomBag<Product> weighted_product_purchases = new EventProducer.WeightedRandomBag<>();
+
+        for(Product product: products){
+            weighted_product_purchases.addEntry(product,product.getPopularity());
+        }
 
         while(true){
-            System.out.println("THE PROCESS SELECTED WAS " + processes.getRandom());
+            System.out.println("THE Product SELECTED WAS " + weighted_product_purchases.getRandom());
             Thread.sleep(500);
         }
 
     }
-
-
 
     public static void populateSingleOrder() throws Exception {
 
@@ -133,7 +128,6 @@ public class EventProducer {
         List<String> vendors = new ArrayList(Arrays.asList("vendor1"));
         List<String> products = new ArrayList(Arrays.asList("product1"));
         List<Long> quantities = new ArrayList(Arrays.asList(1L));
-
 
         AvroOrder avroOrder = AvroOrder.newBuilder()
                 .setId(UUID.randomUUID().toString())

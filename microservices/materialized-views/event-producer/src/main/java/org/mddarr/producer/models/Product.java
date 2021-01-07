@@ -1,25 +1,21 @@
 package org.mddarr.producer.models;
 
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.checkerframework.checker.units.qual.A;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
 
     private String vendor;
     private String product;
     private String category;
-    private String image_url;
+
     private Long inventory;
+    private Integer popularity;
     private Float price;
-
-    Product() {
-    }
-
-    public Product(String vendor, String product, String category, String image_url, Float price, Long inventory) {
-        this.vendor = vendor;
-        this.product = product;
-        this.image_url = image_url;
-        this.price = price;
-        this.inventory = inventory;
-        this.category = category;
-    }
 
     public String getVendor() {
         return vendor;
@@ -45,14 +41,6 @@ public class Product {
         this.category = category;
     }
 
-    public String getImage_url() {
-        return image_url;
-    }
-
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
-    }
-
     public Long getInventory() {
         return inventory;
     }
@@ -68,4 +56,23 @@ public class Product {
     public void setPrice(Float price) {
         this.price = price;
     }
+
+    public Integer getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Integer popularity) {
+        this.popularity = popularity;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "vendor='" + vendor + '\'' +
+                ", product='" + product + '\'' +
+                ", popularity='" + popularity + '\'' +
+                '}';
+    }
+
 }
+

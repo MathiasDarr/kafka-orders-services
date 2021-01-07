@@ -23,7 +23,6 @@ def create_stores_table():
     dbsession.execute(create_stores_table)
 
 
-
 def create_store_inventory_table():
     create = """
      create table store_inventory (
@@ -33,7 +32,6 @@ def create_store_inventory_table():
       inventory int,
       PRIMARY KEY((storeid), vendor, name)      
   );
-    
     """
     dbsession.execute(create)
 

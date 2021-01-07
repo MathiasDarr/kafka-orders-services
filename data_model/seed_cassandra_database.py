@@ -10,7 +10,6 @@ import numpy as np
 from numpy.random import choice
 
 
-
 def create_prooducts_table():
     create_products_table = """CREATE TABLE IF NOT EXISTS products(
         vendor text,
@@ -32,16 +31,11 @@ def populate_products_table(csv_file):
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-
             price = float(row['price'])
-
             percent_profit_draw = choice([.05, .1, .2, .25, .3], 1, p=[.2, .3, .3, .1, .1])
-
             popularity = int(np.random.normal(50,15))
-
             if popularity < 15:
                 popularity = 15
-
             mean_cost = price * (1-percent_profit_draw[0])
             cost = mean_cost + np.random.normal(5)
             dbsession.execute(insert_trip_data_point, [row['vendor'], row['name'], row['image_url'], float(row['price']), cost,row['category'],popularity, 3])

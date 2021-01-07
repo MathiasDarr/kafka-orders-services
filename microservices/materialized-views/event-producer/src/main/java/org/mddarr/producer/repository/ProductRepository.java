@@ -28,7 +28,13 @@ public class ProductRepository {
         ResultSet rs = session.execute(query);
         List<Product> products = new ArrayList<>();
         for (Row r : rs.all()) {
-            Product product = new Product(r.getString("vendor"), r.getString("name"), r.getString("category"), r.getString("image_url"), r.getFloat("price"), r.getLong("inventory") );
+            Product product = new Product();
+            product.setPopularity(r.getInt("popularity"));
+            product.setVendor(r.getString("vendor"));
+            product.setCategory(r.getString("category"));
+            product.setPrice(r.getFloat("price"));
+            product.setInventory(r.getLong("inventory"));
+            product.setProduct(r.getString("name"));
             products.add(product);
         }
         return products;
