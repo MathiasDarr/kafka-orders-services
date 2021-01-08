@@ -1,4 +1,4 @@
-package org.mddarr.orders.processing.service;
+package org.mddarr.ridereceiver;
 
 public class Constants {
     public static String ORDERS_TOPIC ="orders-topic";
@@ -8,11 +8,10 @@ public class Constants {
 
     public static String PURCHASE_EVENT_TOPIC = "purchase-event";
 
-    public static String INVENTORY_TOPIC = "inventory";
-    public static String INVENTORY_STORE = "inventory-store";
+    public static String PRODUCT_INVENTORY_TOPIC = "inventory";
+    public static String PRODUCT_INVENTORY_STORE = "inventory-store";
 
     public static String PRODUCT_INVENTORY_TOPIC_STRING = "inventory-string";
     public static String PRODUCT_INVENTORY_TOPIC_STORE = "inventory-string-store";
-
 
 }

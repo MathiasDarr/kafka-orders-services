@@ -3,6 +3,7 @@ package org.mddarr.orders.processing.service.producers;
 import lombok.RequiredArgsConstructor;
 import org.mddarr.orders.processing.service.Constants;
 import org.mddarr.orders.processing.service.templates.KafkaGenericTemplate;
+import org.mddarr.products.AvroInventory;
 import org.mddarr.products.AvroPurchaseCount;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +16,7 @@ public class Producers {
 
     @Component
     @RequiredArgsConstructor
-    class PurchaseCountProducer {
-
-        private final KafkaTemplate<Integer, String> kafkaTemplate;
+    class AvroProdProducer {
 
         @EventListener(ApplicationStartedEvent.class)
         public void produce() {
@@ -32,6 +31,29 @@ public class Producers {
                     .build();
 
             purchaseEventKafkaTemplate.sendDefault(avroPurchaseCount.getProductId(),avroPurchaseCount);
+        }
+    }
+
+
+
+    @Component
+    @RequiredArgsConstructor
+    class InventoryProducer {
+
+
+        @EventListener(ApplicationStartedEvent.class)
+        public void produce() {
+
+            KafkaGenericTemplate<AvroInventory> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+            KafkaTemplate<String, AvroInventory> purchaseEventKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+            purchaseEventKafkaTemplate.setDefaultTopic(Constants.INVENTORY_TOPIC);
+
+            AvroInventory avroInventory = AvroInventory.newBuilder()
+                    .setProductid("product1")
+                    .setInventory(120)
+                    .build();
+
+            purchaseEventKafkaTemplate.sendDefault(avroInventory.getProductid(),avroInventory);
         }
     }
 
