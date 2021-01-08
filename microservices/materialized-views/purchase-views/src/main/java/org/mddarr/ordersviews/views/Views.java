@@ -8,6 +8,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.mddarr.ordersviews.Constants;
+import org.mddarr.products.AvroInventory;
 import org.mddarr.products.AvroPurchaseCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -19,21 +20,27 @@ import java.util.Map;
 @Configuration
 public class Views {
 
-//    @Component
-//    public static class InventoryView {
-//
-//        @Autowired
-//        public void buildInventoryView(StreamsBuilder builder) {
-//            builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING,
-//                    Consumed.with(Serdes.Integer(), Serdes.String()),
-//                    Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
-//        }
-//    }
+    @Component
+    public static class InventoryView {
+
+        @Autowired
+        public void buildInventoryView(StreamsBuilder builder) {
+            final Map<String, String> serdeConfig = Collections.singletonMap(
+                    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+
+            final SpecificAvroSerde<AvroInventory> avroInventorySerde = new SpecificAvroSerde<>();
+            avroInventorySerde.configure(serdeConfig, false);
+
+            builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING,
+                    Consumed.with(Serdes.String(), avroInventorySerde),
+                    Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
+        }
+    }
 
     @Component
     public static class OrdersView {
         @Autowired
-        public void buildPurchaseCountView(StreamsBuilder builder) {
+        public void buildOrdersView(StreamsBuilder builder) {
 //            final Map<String, String> serdeConfig = Collections.singletonMap(
 //                    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
 //

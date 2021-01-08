@@ -14,16 +14,9 @@ import static org.apache.kafka.streams.state.QueryableStoreTypes.keyValueStore;
 
 @RestController
 @RequiredArgsConstructor
-
 public class OrdersController {
 
     private final StreamsBuilderFactoryBean streamsBuilderFactoryBean;
 
-    @GetMapping("/iq/{id}")
-    public String getOrder(@PathVariable final Integer id) {
-        final KafkaStreams kafkaStreams = streamsBuilderFactoryBean.getKafkaStreams();
-        final ReadOnlyKeyValueStore<Integer, String> store = kafkaStreams.store(fromNameAndType(Constants.ORDERS_STORE , keyValueStore()));
-        return store.get(id);
-    }
 }
 
