@@ -44,33 +44,5 @@ class Producer {
 	}
 }
 
-@Component
-@RequiredArgsConstructor
-class PurchaseEventProducer {
-
-	private final KafkaTemplate<Integer, String> kafkaTemplate;
-
-	@EventListener(ApplicationStartedEvent.class)
-	public void produce() {
-
-		KafkaGenericTemplate<AvroPurchaseCount> kafkaGenericTemplate = new KafkaGenericTemplate<>();
-		KafkaTemplate<String, AvroPurchaseCount> purchaseEventKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
-		purchaseEventKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
-
-		AvroPurchaseCount avroPurchaseCount = AvroPurchaseCount.newBuilder()
-				.setProductId("product1")
-				.setCount(120)
-				.build();
-
-		purchaseEventKafkaTemplate.sendDefault(avroPurchaseCount);
-
-
-		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 1, "iPad");
-		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 2, "iPhone");
-		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 1, "iPad, Airpods");
-		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 2, "HomePod");
-	}
-}
-
 
 
