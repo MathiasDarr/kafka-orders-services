@@ -44,9 +44,22 @@ public class EventProducer {
 
     public static void main(String[] args) throws Exception {
         populateSingleOrder();
+        populateSinglePurchaseEvent();
 
         // EventProducer app = new EventProducer(args);
         //app.start();
+    }
+
+
+    public static void populateSinglePurchaseEvent(){
+        KafkaGenericTemplate<AvroPurchaseEvent> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+        KafkaTemplate<String, AvroPurchaseEvent> ordersKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+        ordersKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
+        AvroPurchaseEvent avroPurchaseEvent = AvroPurchaseEvent.newBuilder()
+                .setProductid("product1")
+                .build();
+        System.out.println("i sent make a purchase event " + avroPurchaseEvent);
+        ordersKafkaTemplate.sendDefault(avroPurchaseEvent);
     }
 
     public static void populateSingleOrder() throws Exception {
