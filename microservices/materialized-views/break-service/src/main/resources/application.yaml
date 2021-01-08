@@ -5,7 +5,7 @@ spring.cloud.stream:
     definition: process_purchase_events;
 
 spring.cloud.stream.bindings.process_purchase_events-in-0:
-  destination: purchase-events
+  destination: purchases
 
 #spring.cloud.stream.kafka.streams.bindings.process_inventory-in-0:
 #  consumer.materializedAs: incoming-store-1

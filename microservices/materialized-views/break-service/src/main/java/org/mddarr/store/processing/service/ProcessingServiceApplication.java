@@ -32,6 +32,11 @@ public class ProcessingServiceApplication {
 	public Consumer<KStream<String, AvroPurchaseEvent>> process_purchase_events() {
 		return (purchaseEventKStream -> {
 
+
+			purchaseEventKStream.foreach((k,v)->{
+				System.out.println("THE PROUDCT IS " + v.getProductid());
+			});
+
 			final Map<String, String> serdeConfig = Collections.singletonMap(
 					AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
 
@@ -46,21 +51,9 @@ public class ProcessingServiceApplication {
 			final KTable<String, Long> songPlayCounts = groupedByProductID.count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(Constants.PURCHASE_COUNT_STORE)
 					.withKeySerde(Serdes.String())
 					.withValueSerde(Serdes.Long()));
-//			groupedByProductID.count(Materialized.<String, String, KeyValueStore<Bytes, byte[]>as("CountsKeyValueStore"));
 
 		});
 	}
-
-
-
-
-
-//	@Bean
-//	public Consumer<KTable<String, AvroInventory>> process_inventory() {
-//		return (avroInventoryKTable -> {
-//
-//		});
-//	}
 
 
 }
