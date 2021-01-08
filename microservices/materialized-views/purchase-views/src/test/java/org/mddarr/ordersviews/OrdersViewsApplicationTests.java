@@ -9,8 +9,4 @@ class OrdersViewsApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
-
-
-
 }

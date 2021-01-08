@@ -16,16 +16,9 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<confluent.version>4.0.0</confluent.version>
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.mddarr</groupId>
-			<artifactId>avro-schema</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -54,35 +47,7 @@
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>io.confluent</groupId>
-			<artifactId>kafka-streams-avro-serde</artifactId>
-			<version>${confluent.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.confluent</groupId>
-			<artifactId>kafka-avro-serializer</artifactId>
-			<version>${confluent.version}</version>
-		</dependency>
-
-
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>confluent</id>
-			<url>https://packages.confluent.io/maven/</url>
-		</repository>
-
-	</repositories>
-
 
 	<build>
 		<plugins>

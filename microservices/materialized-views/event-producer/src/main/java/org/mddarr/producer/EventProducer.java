@@ -116,12 +116,11 @@ public class EventProducer {
             String productid = product.getProductid();
             AvroPurchaseEvent avroPurchaseEvent = AvroPurchaseEvent
                     .newBuilder()
-                    .setProduct(product.getProduct())
-                    .setVendor(product.getVendor())
+                    .setProductid(product.getProductid())
                     .build();
 
             // Concatenate the vendor & the product as the key.. The value will contain the same information ..
-            purchaseEventKafkaTemplate.sendDefault(avroPurchaseEvent.getVendor() + avroPurchaseEvent.getProduct(),avroPurchaseEvent);
+            purchaseEventKafkaTemplate.sendDefault(avroPurchaseEvent.getProductid(),avroPurchaseEvent);
 
             Thread.sleep(500);
         }
@@ -173,7 +172,6 @@ public class EventProducer {
     }
 
 
-
     public static void populatePurchaseEvents() throws InterruptedException {
         /*
         This method generates simulates purchases by randomly selecting products weighted by their popularity.
@@ -205,12 +203,11 @@ public class EventProducer {
 
             AvroPurchaseEvent avroPurchaseEvent = AvroPurchaseEvent
                     .newBuilder()
-                    .setProduct(product.getProduct())
-                    .setVendor(product.getVendor())
+                    .setProductid(product.getProduct())
                     .build();
 
             // Concatenate the vendor & the product as the key.. The value will contain the same information ..
-            purchaseEventKafkaTemplate.sendDefault(avroPurchaseEvent.getVendor() + avroPurchaseEvent.getProduct(),avroPurchaseEvent);
+            purchaseEventKafkaTemplate.sendDefault(avroPurchaseEvent.getProductid(),avroPurchaseEvent);
 
             Thread.sleep(500);
         }

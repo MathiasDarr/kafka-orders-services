@@ -21,6 +21,34 @@
      {"name": "price",  "type": "double"},
      {"name": "inventory",  "type": "long"}
  ]
+},
+
+{"namespace": "org.mddarr.products",
+ "type": "record",
+ "name": "AvroPurchaseCount",
+ "fields": [
+     {"name": "product_id",  "type": "string"},
+     {"name": "count",   "type": "long"}
+ ]
 }
+
+,
+{"namespace": "org.mddarr.products",
+ "type": "record",
+ "name": "AvroPurchaseEvent",
+ "fields": [
+     {"name": "productid",   "type": "string"}
+ ]
+},
+{"namespace": "org.mddarr.products",
+ "type": "record",
+ "name": "AvroInventory",
+ "fields": [
+     {"name": "productid",   "type": "string"},
+     {"name": "inventory",  "type": "long"}
+ ]
+}
+
+
 
 ]

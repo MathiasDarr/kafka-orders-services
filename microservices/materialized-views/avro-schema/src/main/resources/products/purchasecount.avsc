@@ -1,8 +1,0 @@
-{"namespace": "org.mddarr.products",
- "type": "record",
- "name": "AvroPurchaseCount",
- "fields": [
-     {"name": "product_id",  "type": "string"},
-     {"name": "count",   "type": "long"}
- ]
-}

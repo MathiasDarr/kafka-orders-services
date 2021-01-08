@@ -69,23 +69,19 @@ class MaterializedViewApplicationTests {
 		final TestInputTopic<String, AvroPurchaseEvent> puchasesEvents = topologyTestDriver.createInputTopic(Constants.PURCHASE_EVENTS_TOPIC, Serdes.String().serializer(),  purchaseEventSerde.serializer());
 
 		AvroPurchaseEvent avroPurchaseEvent = AvroPurchaseEvent.newBuilder()
-				.setProduct("produc1")
-				.setVendor("osprey")
+				.setProductid("produc1")
 				.build();
 
 		AvroPurchaseEvent avroPurchaseEvent2 = AvroPurchaseEvent.newBuilder()
-				.setProduct("product2")
-				.setVendor("north face")
+				.setProductid("product2")
 				.build();
 
 		AvroPurchaseEvent avroPurchaseEvent3 = AvroPurchaseEvent.newBuilder()
-				.setProduct("product3")
-				.setVendor("osprey")
+				.setProductid("product3")
 				.build();
 
 		AvroPurchaseEvent avroPurchaseEvent4 = AvroPurchaseEvent.newBuilder()
-				.setProduct("product4")
-				.setVendor("dakobed")
+				.setProductid("product4")
 				.build();
 
 		puchasesEvents.pipeInput("a",avroPurchaseEvent);
