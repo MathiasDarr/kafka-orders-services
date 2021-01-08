@@ -35,39 +35,6 @@ import java.util.concurrent.TimeUnit;
 
 public class EventProducer {
 
-    static class WeightedRandomBag<T extends Object> {
-    /*
-    This class picks randomly from a weight collection.
-     */
-        private class Entry {
-            double accumulatedWeight;
-            T object;
-        }
-
-        private List<Entry> entries = new ArrayList<>();
-        private double accumulatedWeight;
-        private Random rand = new Random();
-
-        public void addEntry(T object, double weight) {
-            accumulatedWeight += weight;
-            Entry e = new Entry();
-            e.object = object;
-            e.accumulatedWeight = accumulatedWeight;
-            entries.add(e);
-        }
-
-        public T getRandom() {
-            double r = rand.nextDouble() * accumulatedWeight;
-
-            for (Entry entry: entries) {
-                if (entry.accumulatedWeight >= r) {
-                    return entry.object;
-                }
-            }
-            return null; //should only happen when there are no entries
-        }
-    }
-
     private static final Logger log = LoggerFactory.getLogger(EventProducer.class);
 
     private ExecutorService executor;
@@ -76,14 +43,54 @@ public class EventProducer {
     private List<PurchaseEventProducerThread>purchaseEventProducerThreads;
 
     public static void main(String[] args) throws Exception {
-        populateProductPurchaseCount();
+        populateSingleOrder();
 
-//        populateProducts();
-
-        //        EventProducer app = new EventProducer(args);
-//        app.start();
-
+        // EventProducer app = new EventProducer(args);
+        //app.start();
     }
+
+    public static void populateSingleOrder() throws Exception {
+        /*
+        This method populates a single hardcoded order to kafka
+         */
+        KafkaGenericTemplate<AvroOrder> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+        KafkaTemplate<String, AvroOrder> ordersKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+        ordersKafkaTemplate.setDefaultTopic(Constants.ORDERS_TOPIC);
+
+        List<String> vendors = new ArrayList(Arrays.asList("vendor1"));
+        List<String> products = new ArrayList(Arrays.asList("product1"));
+        List<Long> quantities = new ArrayList(Arrays.asList(1L));
+
+        AvroOrder avroOrder = AvroOrder.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setState(OrderState.PENDING)
+                .setVendors(vendors)
+                .setQuantites(quantities)
+                .setProducts(products)
+                .setPrice(120)
+                .setCustomerId("Charles Goodwin")
+                .build();
+        System.out.println("i sent an order " + avroOrder);
+        ordersKafkaTemplate.sendDefault(avroOrder);
+    }
+
+    public static void populateOrder() throws Exception {
+        CassandraConnector connector = new CassandraConnector();
+        connector.connect("127.0.0.1", null);
+        Session session = connector.getSession();
+
+        KeyspaceRepository sr = new KeyspaceRepository(session);
+        sr.useKeyspace("ks1");
+
+        OrderRepository br = new OrderRepository(session);
+
+        KafkaGenericTemplate<AvroOrder> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+        KafkaTemplate<String, AvroOrder> ordersKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+        ordersKafkaTemplate.setDefaultTopic(Constants.ORDERS_TOPIC);
+        connector.close();
+    }
+
+
     public static void populateProductIDPurchaseEvents() throws InterruptedException {
         /*
         This method generates simulates purchases by randomly selecting products weighted by their popularity.
@@ -99,7 +106,7 @@ public class EventProducer {
 
         List<ProductID> products = productRepository.selectAll();
 
-        WeightedRandomBag<ProductID> weighted_product_purchases = new EventProducer.WeightedRandomBag<>();
+        WeightedRandomBag<ProductID> weighted_product_purchases = new WeightedRandomBag<>();
 
         for(ProductID product: products){
             weighted_product_purchases.addEntry(product,product.getPopularity());
@@ -137,7 +144,7 @@ public class EventProducer {
 
         List<ProductID> products = productRepository.selectAll();
 
-        WeightedRandomBag<ProductID> weighted_product_purchases = new EventProducer.WeightedRandomBag<>();
+        WeightedRandomBag<ProductID> weighted_product_purchases = new WeightedRandomBag<>();
 
         Map<String, Integer> productPurchaseCounts = new HashMap<>();
 
@@ -187,7 +194,7 @@ public class EventProducer {
 
         List<Product> products = productRepository.selectAll();
 
-        WeightedRandomBag<Product> weighted_product_purchases = new EventProducer.WeightedRandomBag<>();
+        WeightedRandomBag<Product> weighted_product_purchases = new WeightedRandomBag<>();
 
         for(Product product: products){
             weighted_product_purchases.addEntry(product,product.getPopularity());
@@ -213,30 +220,7 @@ public class EventProducer {
         }
     }
 
-    public static void populateSingleOrder() throws Exception {
-        /*
-        This method populates a single hardcoded order to kafka
-         */
-        KafkaGenericTemplate<AvroOrder> kafkaGenericTemplate = new KafkaGenericTemplate<>();
-        KafkaTemplate<String, AvroOrder> ordersKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
-        ordersKafkaTemplate.setDefaultTopic(Constants.ORDERS_TOPIC);
 
-        List<String> vendors = new ArrayList(Arrays.asList("vendor1"));
-        List<String> products = new ArrayList(Arrays.asList("product1"));
-        List<Long> quantities = new ArrayList(Arrays.asList(1L));
-
-        AvroOrder avroOrder = AvroOrder.newBuilder()
-                .setId(UUID.randomUUID().toString())
-                .setState(OrderState.PENDING)
-                .setVendors(vendors)
-                .setQuantites(quantities)
-                .setProducts(products)
-                .setPrice(120)
-                .setCustomerId("Charles Goodwin")
-                .build();
-        System.out.println("i sent an order");
-        ordersKafkaTemplate.sendDefault(avroOrder);
-    }
 
 
     private EventProducer(String[] arguments){
