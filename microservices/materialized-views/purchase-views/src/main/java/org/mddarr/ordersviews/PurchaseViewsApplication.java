@@ -5,6 +5,9 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Materialized;
+import org.mddarr.ordersviews.templates.KafkaGenericTemplate;
+import org.mddarr.products.AvroPurchaseCount;
+import org.mddarr.products.AvroPurchaseEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -50,9 +53,17 @@ class PurchaseEventProducer {
 	@EventListener(ApplicationStartedEvent.class)
 	public void produce() {
 
-//		KafkaGenericTemplate<Avro> kafkaGenericTemplate = new KafkaGenericTemplate<>();
-//		KafkaTemplate<String, AvroPurchaseEvent> purchaseEventKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
-//		purchaseEventKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
+		KafkaGenericTemplate<AvroPurchaseCount> kafkaGenericTemplate = new KafkaGenericTemplate<>();
+		KafkaTemplate<String, AvroPurchaseCount> purchaseEventKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
+		purchaseEventKafkaTemplate.setDefaultTopic(Constants.PURCHASE_EVENT_TOPIC);
+
+		AvroPurchaseCount avroPurchaseCount = AvroPurchaseCount.newBuilder()
+				.setProductId("product1")
+				.setCount(120)
+				.build();
+
+		purchaseEventKafkaTemplate.sendDefault(avroPurchaseCount);
+
 
 		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 1, "iPad");
 		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 2, "iPhone");
