@@ -27,28 +27,7 @@ public class PurchaseViewsApplication {
 
 }
 
-@Component
-class InventoryView {
 
-	@Autowired
-	public void buildInventoryView(StreamsBuilder builder) {
-		builder.table(Constants.PRODUCT_INVENTORY_TOPIC,
-				Consumed.with(Serdes.Integer(), Serdes.String()),
-				Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
-	}
-}
-
-
-@Component
-class PurchaseCountView {
-
-	@Autowired
-	public void buildPurchaseCountView(StreamsBuilder builder) {
-		builder.table(Constants.PURCHASE_COUNT_TOPIC,
-				Consumed.with(Serdes.Integer(), Serdes.String()),
-				Materialized.as(Constants.PURCHASE_COUNT_STORE));
-	}
-}
 
 
 

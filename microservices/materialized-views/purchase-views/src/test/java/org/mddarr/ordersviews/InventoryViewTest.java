@@ -6,6 +6,7 @@ import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.junit.jupiter.api.Test;
+import org.mddarr.ordersviews.views.Views;
 
 import java.util.Map;
 import java.util.Properties;
@@ -22,7 +23,7 @@ public class InventoryViewTest {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        new InventoryView().buildInventoryView(builder);
+        new Views.InventoryView().buildInventoryView(builder);
         Properties config = new Properties();
         config.putAll(Map.of(APPLICATION_ID_CONFIG, "test-app",
                 BOOTSTRAP_SERVERS_CONFIG, "dummy:9092"));
