@@ -6,7 +6,6 @@ import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.junit.jupiter.api.Test;
-import org.mddarr.ordersviews.views.OrderView;
 
 import java.util.Map;
 import java.util.Properties;
@@ -16,7 +15,7 @@ import static org.apache.kafka.streams.StreamsConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class PurchaseViewTest {
+public class OrderViewTest {
 
     @Test
     void shouldCreateMaterializedView() {

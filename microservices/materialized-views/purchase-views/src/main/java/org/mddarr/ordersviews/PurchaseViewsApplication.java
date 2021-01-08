@@ -28,6 +28,44 @@ public class PurchaseViewsApplication {
 }
 
 @Component
+class OrderView {
+
+	@Autowired
+	public void buildOrdersView(StreamsBuilder builder) {
+		builder.table("orders",
+				Consumed.with(Serdes.Integer(), Serdes.String()),
+				Materialized.as("orders-store"));
+	}
+}
+//
+//@Component
+//class ProductInventoryView {
+//
+//	@Autowired
+//	public void buildProdutInventoryView(StreamsBuilder builder) {
+//		builder.table("orders",
+//				Consumed.with(Serdes.Integer(), Serdes.String()),
+//				Materialized.as("orders-store"));
+//	}
+//}
+//
+//@Component
+//class PurchaseCountView {
+//
+//	@Autowired
+//	public void buildOrdersView(StreamsBuilder builder) {
+//		builder.table("orders",
+//				Consumed.with(Serdes.Integer(), Serdes.String()),
+//				Materialized.as("orders-store"));
+//	}
+//}
+
+
+
+
+
+
+@Component
 @RequiredArgsConstructor
 class Producer {
 
