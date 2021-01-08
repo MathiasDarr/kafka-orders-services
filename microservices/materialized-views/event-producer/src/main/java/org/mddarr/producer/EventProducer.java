@@ -172,7 +172,6 @@ public class EventProducer {
     }
 
 
-
     public static void populatePurchaseEvents() throws InterruptedException {
         /*
         This method generates simulates purchases by randomly selecting products weighted by their popularity.

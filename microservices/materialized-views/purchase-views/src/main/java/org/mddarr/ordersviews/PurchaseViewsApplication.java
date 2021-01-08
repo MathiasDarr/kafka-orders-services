@@ -28,28 +28,41 @@ public class PurchaseViewsApplication {
 }
 
 @Component
-class OrderView {
+class InventoryView {
 
 	@Autowired
-	public void buildOrdersView(StreamsBuilder builder) {
-		builder.table("orders",
+	public void buildInventoryView(StreamsBuilder builder) {
+		builder.table(Constants.PRODUCT_INVENTORY_TOPIC,
 				Consumed.with(Serdes.Integer(), Serdes.String()),
-				Materialized.as("orders-store"));
+				Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
 	}
 }
+
+//@Component
+//class InventoryView {
 //
-@Component
-class ProductInventoryView {
+//	@Autowired
+//	public void buildInventoryView(StreamsBuilder builder) {
+//		builder.table("orders-second",
+//				Consumed.with(Serdes.Integer(), Serdes.String()),
+//				Materialized.as("inventory-store"));
+//	}
+//}
 
-	@Autowired
-	public void buildProdutInventoryView(StreamsBuilder builder) {
 
-
-		builder.table( Constants.PRODUCT_INVENTORY_TOPIC,
-				Consumed.with(Serdes.Integer(), Serdes.String()),
-				Materialized.as(Constants.PRODUCT_INVENTORY_TOPIC));
-	}
-}
+//
+//@Component
+//class ProductInventoryView {
+//
+//	@Autowired
+//	public void buildProdutInventoryView(StreamsBuilder builder) {
+//
+//
+//		builder.table( Constants.PRODUCT_INVENTORY_TOPIC,
+//				Consumed.with(Serdes.Integer(), Serdes.String()),
+//				Materialized.as(Constants.PRODUCT_INVENTORY_TOPIC));
+//	}
+//}
 //
 //@Component
 //class PurchaseCountView {
@@ -75,10 +88,10 @@ class Producer {
 
 	@EventListener(ApplicationStartedEvent.class)
 	public void produce() {
-		kafkaTemplate.send("orders", 1, "iPad");
-		kafkaTemplate.send("orders", 2, "iPhone");
-		kafkaTemplate.send("orders", 1, "iPad, Airpods");
-		kafkaTemplate.send("orders", 2, "HomePod");
+		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 1, "iPad");
+		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 2, "iPhone");
+		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 1, "iPad, Airpods");
+		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 2, "HomePod");
 	}
 }
 

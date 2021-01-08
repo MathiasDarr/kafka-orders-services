@@ -3,6 +3,7 @@ package org.mddarr.ordersviews.controllers;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.mddarr.ordersviews.Constants;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ public class OrdersController {
     public String getOrder(@PathVariable final Integer id) {
         final KafkaStreams kafkaStreams = streamsBuilderFactoryBean.getKafkaStreams();
         final ReadOnlyKeyValueStore<Integer, String> store =
-                kafkaStreams.store(fromNameAndType("orders-store", keyValueStore()));
+                kafkaStreams.store(fromNameAndType(Constants.PRODUCT_INVENTORY_STORE , keyValueStore()));
         return store.get(id);
     }
 }

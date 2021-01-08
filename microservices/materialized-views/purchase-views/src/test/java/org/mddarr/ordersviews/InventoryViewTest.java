@@ -15,21 +15,21 @@ import static org.apache.kafka.streams.StreamsConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class OrderViewTest {
+public class InventoryViewTest {
 
     @Test
     void shouldCreateMaterializedView() {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        new OrderView().buildOrdersView(builder);
+        new InventoryView().buildInventoryView(builder);
         Properties config = new Properties();
         config.putAll(Map.of(APPLICATION_ID_CONFIG, "test-app",
                 BOOTSTRAP_SERVERS_CONFIG, "dummy:9092"));
 
         try (TopologyTestDriver topologyTestDriver = new TopologyTestDriver(builder.build(), config)) {
             final TestInputTopic<Integer, String> orders =
-                    topologyTestDriver.createInputTopic("orders",
+                    topologyTestDriver.createInputTopic(Constants.PRODUCT_INVENTORY_TOPIC,
                             Serdes.Integer().serializer(),
                             Serdes.String().serializer());
 
@@ -39,7 +39,7 @@ public class OrderViewTest {
             orders.pipeInput(2, "HomePod");
 
             final KeyValueStore<Integer, String> keyValueStore =
-                    topologyTestDriver.getKeyValueStore("orders-store");
+                    topologyTestDriver.getKeyValueStore(Constants.PRODUCT_INVENTORY_STORE);
 
             assertThat(keyValueStore.get(1)).isEqualTo("iPhone, AirPods");
             assertThat(keyValueStore.get(2)).isEqualTo("HomePod");
