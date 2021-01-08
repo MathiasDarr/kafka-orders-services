@@ -30,19 +30,5 @@ public class PurchaseViewsApplication {
 
 }
 
-@Component
-@RequiredArgsConstructor
-class Producer {
-
-	private final KafkaTemplate<Integer, String> kafkaTemplate;
-	@EventListener(ApplicationStartedEvent.class)
-	public void produce() {
-		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 1, "iPad");
-		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 2, "iPhone");
-		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 1, "iPad, Airpods");
-		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 2, "HomePod");
-	}
-}
-
 
 

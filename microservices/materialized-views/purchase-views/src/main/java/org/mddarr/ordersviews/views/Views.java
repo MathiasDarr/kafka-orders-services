@@ -30,26 +30,17 @@ public class Views {
 //        }
 //    }
 
-
     @Component
-    public static class PurchaseCountView {
-
-
-
-
+    public static class OrdersView {
         @Autowired
         public void buildPurchaseCountView(StreamsBuilder builder) {
-
-            final Map<String, String> serdeConfig = Collections.singletonMap(
-                    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
-
-            final SpecificAvroSerde<AvroPurchaseCount> purchaseCountSerde = new SpecificAvroSerde<>();
-            purchaseCountSerde.configure(serdeConfig, false);
-            builder.table(Constants.PURCHASE_COUNT_TOPIC, Consumed.with(Serdes.String(), purchaseCountSerde), Materialized.as(Constants.PURCHASE_COUNT_STORE));
-
+//            final Map<String, String> serdeConfig = Collections.singletonMap(
+//                    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+//
+//            final SpecificAvroSerde<AvroPurchaseCount> purchaseCountSerde = new SpecificAvroSerde<>();
+//            purchaseCountSerde.configure(serdeConfig, false);
+            builder.table(Constants.ORDERS_TOPIC, Consumed.with(Serdes.Integer(), Serdes.String()), Materialized.as(Constants.ORDERS_STORE));
         }
     }
-
-
 
 }

@@ -16,6 +16,7 @@
         <module>avro-schema</module>
         <module>event-producer</module>
         <module>break-service</module>
+        <module>purchase-views</module>
 <!--        <module>processing-service</module>-->
 
     </modules>

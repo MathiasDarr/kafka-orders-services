@@ -13,5 +13,7 @@ public class Constants {
     public static String PRODUCT_INVENTORY_TOPIC_STRING = "inventory-string";
     public static String PRODUCT_INVENTORY_TOPIC_STORE = "inventory-string-store";
 
+    public static String ORDERS_TOPIC = "orders";
+    public static String ORDERS_STORE = "orders-store";
 
 }

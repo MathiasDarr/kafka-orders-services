@@ -22,8 +22,7 @@ public class OrdersController {
     @GetMapping("/iq/{id}")
     public String getOrder(@PathVariable final Integer id) {
         final KafkaStreams kafkaStreams = streamsBuilderFactoryBean.getKafkaStreams();
-        final ReadOnlyKeyValueStore<Integer, String> store =
-                kafkaStreams.store(fromNameAndType(Constants.PRODUCT_INVENTORY_STORE , keyValueStore()));
+        final ReadOnlyKeyValueStore<Integer, String> store = kafkaStreams.store(fromNameAndType(Constants.ORDERS_STORE , keyValueStore()));
         return store.get(id);
     }
 }
