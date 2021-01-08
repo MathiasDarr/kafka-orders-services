@@ -59,7 +59,7 @@ public class EventProducer {
                 .setProductid("product1")
                 .build();
         System.out.println("i sent make a purchase event " + avroPurchaseEvent);
-        ordersKafkaTemplate.sendDefault(avroPurchaseEvent);
+        ordersKafkaTemplate.sendDefault(avroPurchaseEvent.getProductid(), avroPurchaseEvent);
     }
 
     public static void populateSingleOrder() throws Exception {

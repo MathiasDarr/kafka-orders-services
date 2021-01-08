@@ -34,7 +34,7 @@ public class ProcessingServiceApplication {
 
 
 			purchaseEventKStream.foreach((k,v)->{
-				System.out.println("THE PROUDCT IS " + v.getProductid());
+				System.out.println("THE PROUDCT IS " + v.getProductid() + " and the key is " + k);
 			});
 
 			final Map<String, String> serdeConfig = Collections.singletonMap(
@@ -48,11 +48,22 @@ public class ProcessingServiceApplication {
 
 			KGroupedStream<String, AvroPurchaseEvent> groupedByProductID = purchaseEventKStream.groupBy((key, value)->key, Grouped.with(Serdes.String(),avroInventorySerde));
 
-			final KTable<String, Long> songPlayCounts = groupedByProductID.count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(Constants.PURCHASE_COUNT_STORE)
+
+			purchaseEventKStream.foreach((k,v)->{
+				System.out.println("THE PROUDCT2 IS " + v.getProductid());
+			});
+
+			final KTable<String, Long> productPurchaseCountsTable = groupedByProductID.count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(Constants.PURCHASE_COUNT_STORE)
 					.withKeySerde(Serdes.String())
 					.withValueSerde(Serdes.Long()));
 
+			productPurchaseCountsTable.toStream().foreach((k,v) -> {
+				System.out.println("THE PURCHASE COUNT TABLE LOOIKS LIKE " + k + " and the number of purchases is " + v);
+			} );
+
+
 		});
+
 	}
 
 
