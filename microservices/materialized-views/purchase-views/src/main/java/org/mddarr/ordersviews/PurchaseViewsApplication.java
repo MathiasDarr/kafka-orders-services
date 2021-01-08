@@ -38,6 +38,20 @@ class InventoryView {
 	}
 }
 
+
+@Component
+class PurchaseCountView {
+
+	@Autowired
+	public void buildPurchaseCountView(StreamsBuilder builder) {
+		builder.table(Constants.PURCHASE_COUNT_TOPIC,
+				Consumed.with(Serdes.Integer(), Serdes.String()),
+				Materialized.as(Constants.PURCHASE_COUNT_STORE));
+	}
+}
+
+
+
 //@Component
 //class InventoryView {
 //
@@ -94,4 +108,22 @@ class Producer {
 		kafkaTemplate.send(Constants.PRODUCT_INVENTORY_TOPIC, 2, "HomePod");
 	}
 }
+
+
+@Component
+@RequiredArgsConstructor
+class PurchaseEventProducer {
+
+	private final KafkaTemplate<Integer, String> kafkaTemplate;
+
+	@EventListener(ApplicationStartedEvent.class)
+	public void produce() {
+		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 1, "iPad");
+		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 2, "iPhone");
+		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 1, "iPad, Airpods");
+		kafkaTemplate.send(Constants.PURCHASE_COUNT_TOPIC, 2, "HomePod");
+	}
+}
+
+
 
