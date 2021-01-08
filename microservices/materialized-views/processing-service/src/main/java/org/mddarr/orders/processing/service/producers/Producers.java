@@ -50,7 +50,7 @@ public class Producers {
 
             AvroInventory avroInventory = AvroInventory.newBuilder()
                     .setProductid("product1")
-                    .setInventory(120)
+                    .setInventory(100)
                     .build();
 
             purchaseEventKafkaTemplate.sendDefault(avroInventory.getProductid(),avroInventory);
