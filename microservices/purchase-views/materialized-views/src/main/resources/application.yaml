@@ -1,5 +1,0 @@
-spring.application.name: purchases-materialized-view
-spring.kafka.properties.bootstrap.servers: kafka.us-east1.gcp.confluent.cloud:9092
-spring.kafka.producer.key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
-spring.kafka.producer.value-serializer: org.apache.kafka.common.serialization.StringSerializer
-spring.kafka.streams.replication-factor: 3

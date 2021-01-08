@@ -10,7 +10,8 @@ import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mddarr.products.AvroPurchaseCount;
+import org.mddarr.materializedview.views.PurchaseCountView;
+import org.mddarr.materializedview.views.PurchasesView;
 import org.mddarr.products.AvroPurchaseEvent;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -38,43 +39,7 @@ class MaterializedViewApplicationTests {
 		final Map<String, String> serdeConfig = Collections.singletonMap(
 				AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
 
-		final SpecificAvroSerde<AvroPurchaseCount> purchaseCountSerde = new SpecificAvroSerde<>();
-		purchaseCountSerde.configure(serdeConfig, false);
 
-		topologyTestDriver.createInputTopic(Constants.PURCHASE_COUNTS_TOPIC, Serdes.String().serializer(), purchaseCountSerde.serializer());
-
-		final TestInputTopic<String, AvroPurchaseCount> purchaseCounts = topologyTestDriver.createInputTopic(Constants.PURCHASE_COUNTS_TOPIC, Serdes.String().serializer(),  purchaseCountSerde.serializer());
-
-		AvroPurchaseCount avroPurchaseCount = AvroPurchaseCount.newBuilder()
-				.setProductId("product1")
-				.setCount(129)
-				.build();
-
-		AvroPurchaseCount avroPurchaseCount2 = AvroPurchaseCount.newBuilder()
-				.setProductId("product2")
-				.setCount(129)
-				.build();
-
-		AvroPurchaseCount avroPurchaseCount3 = AvroPurchaseCount.newBuilder()
-				.setProductId("product1")
-				.setCount(150)
-				.build();
-
-		AvroPurchaseCount avroPurchaseCount4 = AvroPurchaseCount.newBuilder()
-				.setProductId("product3")
-				.setCount(5)
-				.build();
-
-		purchaseCounts.pipeInput("a",avroPurchaseCount);
-		purchaseCounts.pipeInput("b",avroPurchaseCount2);
-		purchaseCounts.pipeInput("a",avroPurchaseCount3);
-		purchaseCounts.pipeInput("b",avroPurchaseCount4);
-
-		final KeyValueStore<String, AvroPurchaseCount> keyValueStore = topologyTestDriver.getKeyValueStore(Constants.PURCHASE_COUNTS_STORE);
-
-		AvroPurchaseCount purchaseCount = keyValueStore.get("a");
-
-		Assertions.assertThat(purchaseCount.getCount()).isEqualTo(150);
 
 	}
 

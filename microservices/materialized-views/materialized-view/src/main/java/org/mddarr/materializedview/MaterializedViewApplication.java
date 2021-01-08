@@ -13,6 +13,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -26,29 +28,6 @@ public class MaterializedViewApplication {
 		SpringApplication.run(MaterializedViewApplication.class, args);
 	}
 
-}
-
-@Component
-class PurchasesView {
-	public void buildPurchaseEventView(StreamsBuilder builder){
-		final Map<String, String> serdeConfig = Collections.singletonMap(
-				AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
-		final SpecificAvroSerde<AvroPurchaseEvent> purchaseEventSerde = new SpecificAvroSerde<>();
-		purchaseEventSerde.configure(serdeConfig, false);
-		builder.table(Constants.PURCHASE_EVENTS_TOPIC, Consumed.with(Serdes.String(),purchaseEventSerde), Materialized.as(Constants.PURCHASE_EVENTS_STORE));
-	}
-}
-
-@Component
-class PurchaseCountView {
-	public void buildPurchaseCountView(StreamsBuilder builder){
-		final Map<String, String> serdeConfig = Collections.singletonMap(
-				AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
-
-		final SpecificAvroSerde<AvroPurchaseCount> purchaseCountSerde = new SpecificAvroSerde<>();
-		purchaseCountSerde.configure(serdeConfig, false);
-		builder.table(Constants.PURCHASE_COUNTS_TOPIC, Consumed.with(Serdes.String(),purchaseCountSerde), Materialized.as(Constants.PURCHASE_COUNTS_STORE));
-	}
 }
 
 @Component

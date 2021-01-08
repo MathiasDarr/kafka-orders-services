@@ -19,8 +19,7 @@
 		<java.version>11</java.version>
 	</properties>
 	<modules>
-<!--		<module>purchase-views</module>-->
-		<module>orders-services</module>
+		<module>materialized-views</module>
 	</modules>
 
 	<repositories>
