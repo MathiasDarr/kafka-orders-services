@@ -2,32 +2,18 @@ package org.mddarr.ordersviews;
 
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
-import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
-import org.apache.kafka.streams.state.Stores;
 import org.mddarr.orders.event.dto.AvroOrder;
 import org.mddarr.orders.event.dto.AvroOrderResult;
-import org.mddarr.ordersviews.Constants;
-import org.mddarr.ordersviews.topic.OrdersTopic;
-import org.mddarr.ordersviews.topic.TopicConfig;
 import org.mddarr.products.AvroInventory;
-import org.mddarr.products.AvroPurchaseCount;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
-import org.springframework.kafka.config.TopicBuilder;
-import org.springframework.kafka.support.serializer.JsonSerde;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -89,17 +75,15 @@ public class InventoryTopology {
 
         KStream<String, AvroOrder> avroOrderStream = streamsBuilder.stream(Constants.ORDERS_TOPIC, Consumed.with(Serdes.String(),avroOrderSerde));
 
-        KStream<String, AvroOrderResult> orderResultKStream = avroOrderStream.map((k,v)->KeyValue.pair(k,AvroOrderResult.newBuilder().setId("product1").setResult(true).build()));
+//        KStream<String, AvroOrderResult> orderResultKStream = avroOrderStream.map((k,v)->KeyValue.pair(k,AvroOrderResult.newBuilder().setId("product1").setResult(true).build()));
 
+        String storeName = "VALIDATED-ORDERS-OUT";
 
-//        avroOrderStream.to(Constants.ORDERS_VALIDATION_TOPIC);
-//                .transformValues(OrderTransformer::new, Constants.PRODUCT_INVENTORY_STORE);
+        KStream<String, AvroOrderResult> avroOrderResultKStream = avroOrderStream.transformValues(() -> new OrderValidationTransformer() );
+        avroOrderResultKStream.to(Constants.ORDERS_VALIDATION_TOPIC, Produced.with(Serdes.String(), avroOrderResultSerde));
+//        orderResultKStream.to(Constants.ORDERS_VALIDATION_TOPIC, Produced.with(Serdes.String(), avroOrderResultSerde));
 //
-
-        orderResultKStream.to(Constants.ORDERS_VALIDATION_TOPIC, Produced.with(Serdes.String(), avroOrderResultSerde));
-
-
-//        KStream<String, AvroOrder> orderResultKStream = avroOrderStream.map((k,v)->KeyValue.pair(k,v));
+//        KStream<String, AvroOrderResult> orderResultKStream = avroOrderStream.map((k,v)->KeyValue.pair(k,v));
 //        orderResultKStream.to(Constants.ORDERS_VALIDATION_TOPIC, Produced.with(Serdes.String(), avroOrderSerde));
 
 

@@ -12,9 +12,9 @@ import org.mddarr.transactions.AvroTransaction;
 import org.mddarr.transactions.AvroTransactionResult;
 
 @Slf4j
-public class OrderTransformer implements ValueTransformer<AvroOrder, AvroOrder>{
+public class OrderValidationTransformer implements ValueTransformer<AvroOrder, AvroOrderResult>{
 
-    public OrderTransformer(){
+    public OrderValidationTransformer(){
     }
 
     @Override
@@ -31,13 +31,13 @@ public class OrderTransformer implements ValueTransformer<AvroOrder, AvroOrder>{
     }
 
     @Override
-    public AvroOrder transform(AvroOrder avroOrder) {
+    public AvroOrderResult transform(AvroOrder avroOrder) {
 
-//        AvroOrderResult avroOrderResult = AvroOrderResult.newBuilder()
-//                .setId(avroOrder.getId())
-//                .setResult(true)
-//                .build();
-        return avroOrder;
+        AvroOrderResult avroOrderResult = AvroOrderResult.newBuilder()
+                .setId(avroOrder.getId())
+                .setResult(true)
+                .build();
+        return avroOrderResult;
     }
 
     @Override

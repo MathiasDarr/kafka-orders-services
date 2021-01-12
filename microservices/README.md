@@ -6,3 +6,11 @@
 
 
 ## Inventory Service ##
+
+
+
+
+### Microservices ###
+
+
+##### Inventory Topology #####
