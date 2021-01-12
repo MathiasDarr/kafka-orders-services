@@ -20,7 +20,7 @@ public class InventoryViewTest {
 //                    topologyTestDriver.createInputTopic(Constants.PRODUCT_INVENTORY_TOPIC,
 //                            Serdes.Integer().serializer(),
 //                            Serdes.String().serializer());
-//
+
 //            orders.pipeInput(1, "iPhone");
 //            orders.pipeInput(2, "iPad");
 //            orders.pipeInput(1, "iPhone, AirPods");

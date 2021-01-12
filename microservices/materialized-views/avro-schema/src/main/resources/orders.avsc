@@ -30,6 +30,9 @@
 },
 
 
+
+
+
 {"namespace": "org.mddarr.orders.event.dto",
  "type": "record",
  "name": "ValidatedOrder",

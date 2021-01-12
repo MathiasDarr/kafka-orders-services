@@ -62,44 +62,44 @@ public class KStreamConfig {
 //
 //
 //
-    protected void defineStreams(StreamsBuilder streamsBuilder) {
-
-        KStream<String, AvroOrder> transactionStream =
-                streamsBuilder.stream(Constants.ORDERS_TOPIC);
-
-        final String storeName = Constants.TOPOLOGY_STORE;
-
-        transactionStream
-                .map((key,value)-> KeyValue.pair(value.getCustomerId(), value))
-                .to(Constants.ORDERS_VALIDATION_TOPIC);
-    }
-
-    public Topology topology(StreamsBuilder streamsBuilder) {
-        Topology topology = streamsBuilder.build();
-        return topology;
-    }
-
-    @Component
-    public static class InventoryView {
-
-        @Autowired
-        public void buildInventoryView(StreamsBuilder builder) {
-            final Map<String, String> serdeConfig = Collections.singletonMap(
-                    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
-
-            final SpecificAvroSerde<AvroInventory> avroInventorySerde = new SpecificAvroSerde<>();
-            avroInventorySerde.configure(serdeConfig, false);
-            /*
-            This line of code does several things
-            1) subscirbes to events on this topic
-            2) Resets to the earliest offset & loads all events into the Kafka Streams API
-            3) Pushes these events into a state store, a local, disk resident hash table locationed in the Kafka Streams API.
-             */
-
-
-            builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING,
-                    Consumed.with(Serdes.String(), avroInventorySerde),
-                    Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
-        }
-    }
+//    protected void defineStreams(StreamsBuilder streamsBuilder) {
+//
+//        KStream<String, AvroOrder> transactionStream =
+//                streamsBuilder.stream(Constants.ORDERS_TOPIC);
+//
+//        final String storeName = Constants.TOPOLOGY_STORE;
+//
+//        transactionStream
+//                .map((key,value)-> KeyValue.pair(value.getCustomerId(), value))
+//                .to(Constants.ORDERS_VALIDATION_TOPIC);
+//    }
+//
+//    public Topology topology(StreamsBuilder streamsBuilder) {
+//        Topology topology = streamsBuilder.build();
+//        return topology;
+//    }
+//
+//    @Component
+//    public static class InventoryView {
+//
+//        @Autowired
+//        public void buildInventoryView(StreamsBuilder builder) {
+//            final Map<String, String> serdeConfig = Collections.singletonMap(
+//                    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+//
+//            final SpecificAvroSerde<AvroInventory> avroInventorySerde = new SpecificAvroSerde<>();
+//            avroInventorySerde.configure(serdeConfig, false);
+//            /*
+//            This line of code does several things
+//            1) subscirbes to events on this topic
+//            2) Resets to the earliest offset & loads all events into the Kafka Streams API
+//            3) Pushes these events into a state store, a local, disk resident hash table locationed in the Kafka Streams API.
+//             */
+//
+//
+//            builder.table(Constants.PRODUCT_INVENTORY_TOPIC,
+//                    Consumed.with(Serdes.String(), avroInventorySerde),
+//                    Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
+//        }
+//    }
 }

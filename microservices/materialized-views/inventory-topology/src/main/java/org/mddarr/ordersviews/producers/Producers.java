@@ -14,19 +14,19 @@ import org.springframework.stereotype.Component;
 @Configuration
 public class Producers {
 
-    @Component
-    @RequiredArgsConstructor
-    class OrdersProducer {
-
-        private final KafkaTemplate<Integer, String> kafkaTemplate;
-        @EventListener(ApplicationStartedEvent.class)
-        public void produce() {
-            kafkaTemplate.send(Constants.ORDERS_TOPIC, 1, "iPad");
-            kafkaTemplate.send(Constants.ORDERS_TOPIC, 2, "iPhone");
-            kafkaTemplate.send(Constants.ORDERS_TOPIC, 1, "iPad, Airpods");
-            kafkaTemplate.send(Constants.ORDERS_TOPIC, 2, "HomePod");
-        }
-    }
+//    @Component
+//    @RequiredArgsConstructor
+//    class OrdersProducer {
+//
+//        private final KafkaTemplate<Integer, String> kafkaTemplate;
+//        @EventListener(ApplicationStartedEvent.class)
+//        public void produce() {
+//            kafkaTemplate.send(Constants.ORDERS_TOPIC, 1, "iPad");
+//            kafkaTemplate.send(Constants.ORDERS_TOPIC, 2, "iPhone");
+//            kafkaTemplate.send(Constants.ORDERS_TOPIC, 1, "iPad, Airpods");
+//            kafkaTemplate.send(Constants.ORDERS_TOPIC, 2, "HomePod");
+//        }
+//    }
 
     @Component
     @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class Producers {
 
             KafkaGenericTemplate<AvroInventory> kafkaGenericTemplate = new KafkaGenericTemplate<>();
             KafkaTemplate<String, AvroInventory> purchaseEventKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
-            purchaseEventKafkaTemplate.setDefaultTopic(Constants.PRODUCT_INVENTORY_TOPIC_STRING);
+            purchaseEventKafkaTemplate.setDefaultTopic(Constants.PRODUCT_INVENTORY_TOPIC);
 
             AvroInventory avroInventory = AvroInventory.newBuilder()
                     .setInventory(12)

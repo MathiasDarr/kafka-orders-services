@@ -79,7 +79,7 @@ public class EventProducer {
                 .setCustomerId("Charles Goodwin")
                 .build();
         System.out.println("i sent an order " + avroOrder);
-        ordersKafkaTemplate.sendDefault(avroOrder);
+        ordersKafkaTemplate.sendDefault(avroOrder.getId(),avroOrder);
     }
 
     public static void populateOrder() throws Exception {
