@@ -1,5 +1,7 @@
 server.port: 8080
 
+spring.application.name: inventory-service
+
 spring.cloud.stream:
   function:
     definition: process_orders;

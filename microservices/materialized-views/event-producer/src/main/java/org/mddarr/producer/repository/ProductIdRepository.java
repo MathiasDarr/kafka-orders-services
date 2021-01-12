@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ProductIdRepository {
 
-    private static final String PRODUCTSID_TABLE_NAME = "productsid";
+    private static final String PRODUCTSID_TABLE_NAME = "products";
 
     private Session session;
 
@@ -40,10 +40,11 @@ public class ProductIdRepository {
         return products;
     }
 
-    public static List<AvroProductID> mapAvroProducts(List<ProductID> products){
-        List<AvroProductID> avroProducts = new ArrayList<>();
+
+    public static List<AvroProduct> mapAvroProducts(List<ProductID> products){
+        List<AvroProduct> avroProducts = new ArrayList<>();
         for(ProductID product: products){
-            AvroProductID avroProduct = AvroProductID.newBuilder()
+            AvroProduct avroProduct = AvroProduct.newBuilder()
                     .setProductid(product.getProductid())
                     .setProduct(product.getProduct())
                     .setInventory(product.getInventory())
@@ -54,6 +55,9 @@ public class ProductIdRepository {
         }
         return avroProducts;
     }
+
+
+
 
 
 }

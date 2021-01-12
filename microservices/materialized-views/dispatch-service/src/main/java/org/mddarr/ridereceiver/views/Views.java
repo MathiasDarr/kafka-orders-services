@@ -7,6 +7,8 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Materialized;
 
+import org.mddarr.products.AvroInventory;
+import org.mddarr.products.AvroProduct;
 import org.mddarr.products.AvroPurchaseCount;
 import org.mddarr.ridereceiver.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +20,18 @@ import java.util.Map;
 
 @Configuration
 public class Views {
+
     @Component
-    public static class InentoryView {
+    public static class InventoryView {
         @Autowired
-        public void buildPurchaseCountView(StreamsBuilder builder) {
+        public void buildInventoryView(StreamsBuilder builder) {
             final Map<String, String> serdeConfig = Collections.singletonMap(
                     AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
-
-            final SpecificAvroSerde<AvroPurchaseCount> purchaseCountSerde = new SpecificAvroSerde<>();
+            final SpecificAvroSerde<AvroProduct> purchaseCountSerde = new SpecificAvroSerde<>();
             purchaseCountSerde.configure(serdeConfig, false);
-            builder.table(Constants.PURCHASE_COUNT_TOPIC, Consumed.with(Serdes.String(), purchaseCountSerde), Materialized.as(Constants.PURCHASE_COUNT_STORE));
-
+            builder.table(Constants.INVENTORY_TOPIC, Consumed.with(Serdes.String(), purchaseCountSerde), Materialized.as(Constants.INVENTORY_STORE));
         }
     }
+
 
 }

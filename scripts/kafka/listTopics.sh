@@ -1,2 +1,2 @@
 #!/bin/bash
-docker exec -it kafka bash bin/kafka-topics.sh --list --bootstrap-server kafka:9092
+docker exec kafka bash /bin/kafka-topics --list --bootstrap-server kafka:9092

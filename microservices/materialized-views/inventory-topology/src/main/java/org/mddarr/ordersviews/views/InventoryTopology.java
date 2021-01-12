@@ -3,6 +3,8 @@ package org.mddarr.ordersviews.views;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
@@ -13,13 +15,17 @@ import org.mddarr.products.AvroInventory;
 import org.mddarr.products.AvroPurchaseCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Map;
 
 @Configuration
-public class Views {
+@EnableKafkaStreams
+@Slf4j
+@RequiredArgsConstructor
+public class InventoryTopology {
 
     @Component
     public static class InventoryView {
@@ -37,11 +43,11 @@ public class Views {
             2) Resets to the earliest offset & loads all events into the Kafka Streams API
             3) Pushes these events into a state store, a local, disk resident hash table locationed in the Kafka Streams API.
              */
-            KTable<String, AvroInventory> inventoryKTable = builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING);
+      
 
-//            builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING,
-//                    Consumed.with(Serdes.String(), avroInventorySerde),
-//                    Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
+            builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING,
+                    Consumed.with(Serdes.String(), avroInventorySerde),
+                    Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
         }
     }
 

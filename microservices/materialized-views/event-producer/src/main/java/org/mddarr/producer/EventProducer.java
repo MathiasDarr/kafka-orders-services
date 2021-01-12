@@ -1,13 +1,10 @@
 package org.mddarr.producer;
 
 import com.datastax.driver.core.Session;
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.mddarr.customers.AvroCustomer;
 
 import org.mddarr.producer.models.*;
+import org.mddarr.producer.simulations.WeightedRandomBag;
 import org.mddarr.products.AvroPurchaseCount;
 import org.mddarr.products.AvroPurchaseEvent;
 
@@ -24,7 +21,6 @@ import org.mddarr.producer.runnable.PurchaseEventProducerThread;
 import org.mddarr.products.AvroProduct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.*;
@@ -44,12 +40,11 @@ public class EventProducer {
 
     public static void main(String[] args) throws Exception {
         populateSingleOrder();
-        populateSinglePurchaseEvent();
-
+//        populateSinglePurchaseEvent();
+//        populateProducts();
         // EventProducer app = new EventProducer(args);
         //app.start();
     }
-
 
     public static void populateSinglePurchaseEvent(){
         KafkaGenericTemplate<AvroPurchaseEvent> kafkaGenericTemplate = new KafkaGenericTemplate<>();
@@ -234,8 +229,6 @@ public class EventProducer {
     }
 
 
-
-
     private EventProducer(String[] arguments){
         latch = new CountDownLatch(2);
         executor = Executors.newFixedThreadPool(2);
@@ -330,7 +323,6 @@ public class EventProducer {
     }
 
 
-
     public static void populateProducts() throws Exception {
         CassandraConnector connector = new CassandraConnector();
         connector.connect("127.0.0.1", null);
@@ -339,17 +331,17 @@ public class EventProducer {
         KeyspaceRepository sr = new KeyspaceRepository(session);
         sr.useKeyspace("ks1");
 
-        ProductRepository br = new ProductRepository(session);
-        List<Product>  products = br.selectAll();
+        ProductIdRepository br = new ProductIdRepository(session);
+        List<ProductID>  products = br.selectAll();
         List<AvroProduct> avroProducts = ProductRepository.mapAvroProducts(products);
 
         KafkaGenericTemplate<AvroProduct> kafkaGenericTemplate = new KafkaGenericTemplate<>();
         KafkaTemplate<String, AvroProduct> productKafkaTemplate = kafkaGenericTemplate.getKafkaTemplate();
-        productKafkaTemplate.setDefaultTopic(Constants.PRODUCTS_TOPIC);
+        productKafkaTemplate.setDefaultTopic(Constants.INVENTORY_TOPIC);
 
         avroProducts.forEach(product -> {
-            System.out.println("Writing inventory for '" + product.getProduct() + "' to input topic " + Constants.PRODUCTS_TOPIC);
-            productKafkaTemplate.sendDefault(product);
+            System.out.println("Writing inventory for '" + product.getProduct() + "' to input topic " + Constants.INVENTORY_TOPIC);
+            productKafkaTemplate.sendDefault(product.getProductid(), product);
         });
 
         connector.close();

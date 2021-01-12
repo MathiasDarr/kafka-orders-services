@@ -1,4 +1,4 @@
-package org.mddarr.producer;
+package org.mddarr.producer.simulations;
 
 public class StoreSimulation {
 

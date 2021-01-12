@@ -15,8 +15,12 @@
     <modules>
         <module>avro-schema</module>
         <module>event-producer</module>
-        <module>orders-validation-service</module>
-        <module>inventory-service</module>
+        <module>inventory-topology</module>
+<!--&lt;!&ndash;        <module>dispatch-service</module>&ndash;&gt;-->
+<!--        <module>purchase-views</module>-->
+<!--        <module>orders-validation-service</module>-->
+<!--        <module>inventory-service</module>-->
+<!--        <module>dispatch-service</module>-->
 <!--        <module>inventory-service</module>-->
 <!--        <module>break-service</module>-->
 <!--        <module>purchase-views</module>-->

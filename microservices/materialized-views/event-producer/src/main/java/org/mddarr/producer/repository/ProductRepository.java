@@ -8,6 +8,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import org.mddarr.producer.models.Product;
+import org.mddarr.producer.models.ProductID;
 import org.mddarr.products.AvroProduct;
 
 public class ProductRepository {
@@ -40,10 +41,12 @@ public class ProductRepository {
         return products;
     }
 
-    public static List<AvroProduct> mapAvroProducts(List<Product> products){
+
+    public static List<AvroProduct> mapAvroProducts(List<ProductID> products){
         List<AvroProduct> avroProducts = new ArrayList<>();
-        for(Product product: products){
+        for(ProductID product: products){
             AvroProduct avroProduct = AvroProduct.newBuilder()
+                    .setProductid(product.getProductid())
                     .setProduct(product.getProduct())
                     .setInventory(product.getInventory())
                     .setPrice(product.getPrice())
@@ -53,6 +56,7 @@ public class ProductRepository {
         }
         return avroProducts;
     }
+
 
 
 }

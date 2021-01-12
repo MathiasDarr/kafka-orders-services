@@ -10,8 +10,8 @@ import numpy as np
 from numpy.random import choice
 import uuid
 
-def create_productsid_table():
-    create_productsid_table = """CREATE TABLE IF NOT EXISTS productsid(
+def create_products_table():
+    create_products_table = """CREATE TABLE IF NOT EXISTS products(
         productid text,
         vendor text,
         name text, 
@@ -23,11 +23,11 @@ def create_productsid_table():
         inventory bigint,
         PRIMARY KEY(productid)) ;
     """
-    dbsession.execute(create_productsid_table)
+    dbsession.execute(create_products_table)
 
 
 def populate_productsid_table(csv_file):
-    insert_trip_data_point = """INSERT INTO productsid(productid, vendor, name, price, cost, category, popularity, inventory) VALUES(%s,%s,%s,%s,%s,%s, %s, %s);"""
+    insert_trip_data_point = """INSERT INTO products(productid, vendor, name, price, cost, category, popularity, inventory) VALUES(%s,%s,%s,%s,%s,%s, %s, %s);"""
 
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -162,7 +162,7 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
     create_orders_table()
-    create_productsid_table()
+    create_products_table()
     create_customers_table()
 
     populate_productsid()

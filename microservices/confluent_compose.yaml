@@ -10,6 +10,23 @@ services:
       - POSTGRES_DB=postgresdb
     container_name: postgres
 
+
+  cassandra:
+    container_name: cassandra
+    image: 'bitnami/cassandra:3'
+    ports:
+      - '7000:7000'
+      - '9042:9042'
+
+    environment:
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+      - CASSANDRA_TRANSPORT_PORT_NUMBER=7000
+    volumes:
+      -  'cassandra_data:/bitnami'
+
+
   zookeeper:
     image: confluentinc/cp-zookeeper:6.0.1
     hostname: zookeeper
@@ -94,3 +111,9 @@ services:
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
+
+volumes:
+  postgres_data:
+  data-volume: {}
+  cassandra_data:
+    driver: local
