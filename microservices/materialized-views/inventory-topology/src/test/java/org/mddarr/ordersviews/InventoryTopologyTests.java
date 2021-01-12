@@ -2,9 +2,12 @@ package org.mddarr.ordersviews;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.state.KeyValueStore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,6 +88,45 @@ public class InventoryTopologyTests {
 
 
     @Test
+    void testInventoryStateStore() {
+        final StreamsBuilder streamsBuilder = new StreamsBuilder();
+        topology = new InventoryTopology()
+                .topology(streamsBuilder);
+
+        Properties config = new Properties();
+        config.putAll(Map.of(APPLICATION_ID_CONFIG, "inventory-state-store-test-app",
+                BOOTSTRAP_SERVERS_CONFIG, "dummy:9092"));
+
+        final Map<String, String> serdeConfig = Collections.singletonMap(
+                AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+        // Set serializers and
+        final SpecificAvroSerializer<AvroInventory> productInventorySerializer = new SpecificAvroSerializer<>();
+        productInventorySerializer.configure(serdeConfig, false);
+
+
+        final SpecificAvroSerde<AvroInventory> avroInventorySerde = new SpecificAvroSerde<>();
+        avroInventorySerde.configure(serdeConfig, false);
+
+
+        try (TopologyTestDriver topologyTestDriver = new TopologyTestDriver(streamsBuilder.build(), config)) {
+            final TestInputTopic<String, AvroInventory> inventory_topic = topologyTestDriver.createInputTopic(Constants.PRODUCT_INVENTORY_TOPIC,
+                    Serdes.String().serializer(),
+                    productInventorySerializer);
+
+            KeyValueStore<String, AvroInventory> store =
+                    topologyTestDriver.getKeyValueStore(Constants.PRODUCT_INVENTORY_STORE);
+
+            inventory_topic.pipeInput("product1", inventory1);
+            inventory_topic.pipeInput("product2", inventory2);
+
+            AvroInventory storedProcut1 = store.get("product1");
+
+            Assertions.assertEquals(storedProcut1.getInventory(), inventory1.getInventory());
+
+        }
+    }
+
+    @Test
     void shouldCreateTopology() {
 
         final StreamsBuilder streamsBuilder = new StreamsBuilder();
@@ -101,19 +143,17 @@ public class InventoryTopologyTests {
         final SpecificAvroSerializer<AvroInventory> productInventorySerializer = new SpecificAvroSerializer<>();
         productInventorySerializer.configure(serdeConfig, false);
 
+
+        final SpecificAvroSerde<AvroInventory> avroInventorySerde = new SpecificAvroSerde<>();
+        avroInventorySerde.configure(serdeConfig, false);
+
+
         try (TopologyTestDriver topologyTestDriver = new TopologyTestDriver(streamsBuilder.build(), config)) {
             final TestInputTopic<String, AvroInventory> inventory_topic = topologyTestDriver.createInputTopic(Constants.PRODUCT_INVENTORY_TOPIC,
                             Serdes.String().serializer(),
                             productInventorySerializer);
-            inventory_topic.pipeInput("product1",inventory1);
-            inventory_topic.pipeInput("product2",inventory2);
-
-
 
         }
-
-
-
     }
 
 }

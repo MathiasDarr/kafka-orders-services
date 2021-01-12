@@ -12,7 +12,7 @@ This repository contains a Spring Boot microservices project.
 
 ### Microservices Microservices Architecture ###
 
-<img src ="https://dakobed-images.s3-us-west-2.amazonaws.com/Orders+Microsrevices+Architecture.png" width ="1200" height="800">
+<img src ="https://dakobed-images.s3-us-west-2.amazonaws.com/Orders+Microsrevices+Architecture.png" width ="1200" height="600">
 
 
 
