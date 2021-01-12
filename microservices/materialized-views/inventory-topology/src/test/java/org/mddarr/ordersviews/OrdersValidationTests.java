@@ -94,12 +94,14 @@ public class OrdersValidationTests {
 
             List<String> products = new ArrayList<>(Arrays.asList("item1"));
             List<String> vendors = new ArrayList<>(Arrays.asList("vendor1"));
+            List<String> productids = new ArrayList<>(Arrays.asList("product1"));
             List<Long> quantities = new ArrayList<>(Arrays.asList(1L));
 
             AvroOrder order1 = AvroOrder.newBuilder()
                     .setCustomerId("jerr@gmail.com")
                     .setId("order1")
                     .setProducts(products)
+                    .setProductids(productids)
                     .setQuantites(quantities)
                     .setVendors(vendors)
                     .setPrice(120.0)
@@ -110,9 +112,6 @@ public class OrdersValidationTests {
 
         }
 
-
-
     }
-
 
 }

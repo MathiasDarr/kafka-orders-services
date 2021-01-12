@@ -66,7 +66,9 @@ public class EventProducer {
         ordersKafkaTemplate.setDefaultTopic(Constants.ORDERS_TOPIC);
 
         List<String> vendors = new ArrayList(Arrays.asList("vendor1"));
-        List<String> products = new ArrayList(Arrays.asList("product1"));
+        List<String> products = new ArrayList(Arrays.asList("item1"));
+        List<String> productids = new ArrayList(Arrays.asList("product1"));
+
         List<Long> quantities = new ArrayList(Arrays.asList(1L));
 
         AvroOrder avroOrder = AvroOrder.newBuilder()
@@ -75,6 +77,7 @@ public class EventProducer {
                 .setVendors(vendors)
                 .setQuantites(quantities)
                 .setProducts(products)
+                .setProductids(productids)
                 .setPrice(120)
                 .setCustomerId("Charles Goodwin")
                 .build();

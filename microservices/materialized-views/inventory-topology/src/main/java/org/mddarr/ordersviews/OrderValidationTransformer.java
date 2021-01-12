@@ -14,11 +14,17 @@ import org.mddarr.transactions.AvroTransactionResult;
 @Slf4j
 public class OrderValidationTransformer implements ValueTransformer<AvroOrder, AvroOrderResult>{
 
-    public OrderValidationTransformer(){
+    private final String stateStoreName;
+
+    private KeyValueStore<String, AvroInventory> store;
+
+
+    public OrderValidationTransformer(String storeName ){
+        stateStoreName = storeName;
     }
 
     @Override
-    public void init(ProcessorContext processorContext) {
+    public void init(ProcessorContext context) {
         AvroTransaction avroTransaction = AvroTransaction.newBuilder()
                 .setReceiver("Charles")
                 .setSender("Erik")
@@ -28,6 +34,8 @@ public class OrderValidationTransformer implements ValueTransformer<AvroOrder, A
                 .setTransaction(avroTransaction)
                 .setResult(false)
                 .build();
+        store = (KeyValueStore<String, AvroInventory>) context.getStateStore(stateStoreName);
+
     }
 
     @Override

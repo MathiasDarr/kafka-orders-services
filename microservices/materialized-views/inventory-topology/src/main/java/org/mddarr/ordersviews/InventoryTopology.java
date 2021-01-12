@@ -48,7 +48,6 @@ public class InventoryTopology {
         orders topic KStream
          */
 
-
         final Map<String, String> serdeConfig = Collections.singletonMap(
                 AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
 
@@ -56,15 +55,18 @@ public class InventoryTopology {
 
         avroInventorySerde.configure(serdeConfig, false);
 
-        KTable<String, AvroInventory> avroInventoryTable = streamsBuilder.table(Constants.PRODUCT_INVENTORY_TOPIC,
-                Consumed.with(Serdes.String(), avroInventorySerde),Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
+        String inventoryStoreName = Constants.PRODUCT_INVENTORY_STORE;
 
-            /*
+
+        /*
             This line of code does several things
             1) subscirbes to events on this topic
             2) Resets to the earliest offset & loads all events into the Kafka Streams API
             3) Pushes these events into a state store, a local, disk resident hash table locationed in the Kafka Streams API.
-             */
+        */
+        KTable<String, AvroInventory> avroInventoryTable = streamsBuilder.table(Constants.PRODUCT_INVENTORY_TOPIC,
+                Consumed.with(Serdes.String(), avroInventorySerde),
+                Materialized.as(inventoryStoreName));
 
         final SpecificAvroSerde<AvroOrder> avroOrderSerde = new SpecificAvroSerde<>();
         avroOrderSerde.configure(serdeConfig, false);
@@ -77,15 +79,13 @@ public class InventoryTopology {
 
 //        KStream<String, AvroOrderResult> orderResultKStream = avroOrderStream.map((k,v)->KeyValue.pair(k,AvroOrderResult.newBuilder().setId("product1").setResult(true).build()));
 
-        String storeName = "VALIDATED-ORDERS-OUT";
 
-        KStream<String, AvroOrderResult> avroOrderResultKStream = avroOrderStream.transformValues(() -> new OrderValidationTransformer() );
+        KStream<String, AvroOrderResult> avroOrderResultKStream = avroOrderStream.transformValues(() -> new OrderValidationTransformer(inventoryStoreName), inventoryStoreName);
         avroOrderResultKStream.to(Constants.ORDERS_VALIDATION_TOPIC, Produced.with(Serdes.String(), avroOrderResultSerde));
 //        orderResultKStream.to(Constants.ORDERS_VALIDATION_TOPIC, Produced.with(Serdes.String(), avroOrderResultSerde));
-//
+
 //        KStream<String, AvroOrderResult> orderResultKStream = avroOrderStream.map((k,v)->KeyValue.pair(k,v));
 //        orderResultKStream.to(Constants.ORDERS_VALIDATION_TOPIC, Produced.with(Serdes.String(), avroOrderSerde));
-
 
     }
 
@@ -97,8 +97,6 @@ public class InventoryTopology {
             return avroOrderResult;
 
     }
-
-
 
 
 //    @Component
