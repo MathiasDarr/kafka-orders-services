@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource(value = "classpath:topics-defaults.properties")
+@PropertySource(value = "classpath:topics-defaults.yaml")
 @Data
 public abstract class TopicConfig {
 

@@ -1,0 +1,23 @@
+[
+
+{"namespace": "org.mddarr.transactions",
+ "type": "record",
+ "name": "AvroTransaction",
+ "fields": [
+     {"name": "transactionid", "type": "string"},
+     {"name": "sender", "type": "string"},
+     {"name": "receiver", "type": "string"}
+
+ ]
+},
+
+{"namespace": "org.mddarr.transactions",
+ "type": "record",
+ "name": "AvroTransactionResult",
+ "fields": [
+     {"name": "transaction", "type": "AvroTransaction"},
+     {"name": "result", "type": "boolean"}
+
+ ]
+}
+]

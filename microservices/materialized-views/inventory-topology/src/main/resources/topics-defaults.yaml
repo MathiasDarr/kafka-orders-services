@@ -1,0 +1,12 @@
+# Topics initialization
+topics.transaction-failed.name: order-failed
+topics.transaction-failed.partitions: 10
+topics.transaction-failed.replication-factor: 1
+
+topics.transaction-request.name: order-request
+topics.transaction-request.partitions: 10
+topics.transaction-request.replication-factor: 1
+
+topics.transaction-success.name: order-success
+topics.transaction-success.partitions: 10
+topics.transaction-success.replication-factor: 1
