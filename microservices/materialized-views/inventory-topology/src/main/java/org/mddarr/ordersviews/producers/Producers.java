@@ -28,7 +28,6 @@ public class Producers {
         }
     }
 
-
     @Component
     @RequiredArgsConstructor
     class InventoryProducer {

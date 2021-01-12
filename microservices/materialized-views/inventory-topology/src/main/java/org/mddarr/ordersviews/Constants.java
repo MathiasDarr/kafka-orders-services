@@ -15,4 +15,8 @@ public class Constants {
     public static String ORDERS_TOPIC = "orders";
     public static String ORDERS_STORE = "orders-store";
 
+    public static String ORDERS_VALIDATION_TOPIC ="order-validations";
+
+    public static String TOPOLOGY_STORE ="topology-store";
+
 }
