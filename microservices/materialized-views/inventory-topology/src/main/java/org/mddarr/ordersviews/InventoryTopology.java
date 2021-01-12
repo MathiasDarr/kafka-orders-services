@@ -25,17 +25,8 @@ public class InventoryTopology {
 
     @Bean
     public Topology topology(StreamsBuilder streamsBuilder){
-//        final Map<String, String> serdeConfig = Collections.singletonMap(
-//                AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
-//
-//        final SpecificAvroSerde<AvroInventory> avroInventorySerde = new SpecificAvroSerde<>();
-//        avroInventorySerde.configure(serdeConfig, false);
-//
-//        streamsBuilder.addStateStore(
-//                Stores.keyValueStoreBuilder(Stores.persistentKeyValueStore(Constants.TOPOLOGY_STORE),
-//                        Serdes.String(), avroInventorySerde));
-//        defineStreams(streamsBuilder);
-//
+
+
         Topology topology = streamsBuilder.build();
         defineStreams(streamsBuilder);
         return topology;
@@ -64,6 +55,7 @@ public class InventoryTopology {
             2) Resets to the earliest offset & loads all events into the Kafka Streams API
             3) Pushes these events into a state store, a local, disk resident hash table locationed in the Kafka Streams API.
         */
+
         KTable<String, AvroInventory> avroInventoryTable = streamsBuilder.table(Constants.PRODUCT_INVENTORY_TOPIC,
                 Consumed.with(Serdes.String(), avroInventorySerde),
                 Materialized.as(inventoryStoreName));
@@ -122,17 +114,6 @@ public class InventoryTopology {
 //        }
 //    }
 
-//    @Component
-//    public static class OrdersView {
-//        @Autowired
-//        public void buildOrdersView(StreamsBuilder builder) {
-////            final Map<String, String> serdeConfig = Collections.singletonMap(
-////                    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
-////
-////            final SpecificAvroSerde<AvroPurchaseCount> purchaseCountSerde = new SpecificAvroSerde<>();
-////            purchaseCountSerde.configure(serdeConfig, false);
-//            builder.table(Constants.ORDERS_TOPIC, Consumed.with(Serdes.Integer(), Serdes.String()), Materialized.as(Constants.ORDERS_STORE));
-//        }
-//    }
+
 
 }

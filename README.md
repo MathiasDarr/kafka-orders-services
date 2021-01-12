@@ -10,7 +10,14 @@ This repository contains a Spring Boot microservices project.
 * Ehcache
 * Jmeter for performance testing 
 
-### Spring Microservices ###
+### Microservices Microservices Architecture ###
+
+<img src ="https://dakobed-images.s3-us-west-2.amazonaws.com/Orders+Microsrevices+Architecture.png" width ="1200" height="800">
+
+
+
+
+
 
 * event-producer 
    - This module contains a main class which populates the inventory & orders topic
@@ -30,20 +37,6 @@ This repository contains a Spring Boot microservices project.
 * DynamoDB backend
 
 
-### Project Dependencies ###
-* Java 11 & maven (if compiling & running natively instead of through Docker)
-* docker-compose
-
-### Running the microservices ###
-* Ensure that the DynamoDB products table has been populated.  This can be done following the instructions in the data_model/products directory. 
-* Launch zookeeper, kafka broker & schema registry in docker
-    * docker-compose -f kafka-compose.yaml up 
-* Compile 
-    * mvn clean package
-
-* Integration tests
-    - test suite utilizes the python requests module to invoke the Lambda function via the API Gateway resouce & method
-    - use requests to upload file file using the presigned post url returned by the lambda function 
 
 
 

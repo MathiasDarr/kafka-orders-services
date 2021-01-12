@@ -44,9 +44,6 @@ public class OrdersValidationTests {
 
         topology = new InventoryTopology()
                 .topology(streamsBuilder);
-
-
-
     }
 
     @Test
@@ -64,7 +61,6 @@ public class OrdersValidationTests {
     public void shouldCreateSuccessfulTransaction() {
 
         try (TopologyTestDriver testDriver = new TopologyTestDriver(topology, properties)) {
-
 
         }
     }
