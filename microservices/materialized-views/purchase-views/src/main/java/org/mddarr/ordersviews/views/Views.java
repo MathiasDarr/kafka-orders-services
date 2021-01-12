@@ -6,6 +6,7 @@ import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.mddarr.ordersviews.Constants;
 import org.mddarr.products.AvroInventory;
@@ -31,9 +32,26 @@ public class Views {
             final SpecificAvroSerde<AvroInventory> avroInventorySerde = new SpecificAvroSerde<>();
             avroInventorySerde.configure(serdeConfig, false);
 
-            builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING,
-                    Consumed.with(Serdes.String(), avroInventorySerde),
-                    Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
+
+            /*
+            This line of code does several things
+
+            1) subscirbes to events on this topic
+            2) Resets to the earliest offset & loads all events into the Kafka Streams API
+            3) Pushes these events into a state store, a local, disk resident hash table locationed in the Kafka Streams API.
+
+
+             */
+
+
+            KTable<String, AvroInventory> inventoryKTable = builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING);
+
+
+
+
+//            builder.table(Constants.PRODUCT_INVENTORY_TOPIC_STRING,
+//                    Consumed.with(Serdes.String(), avroInventorySerde),
+//                    Materialized.as(Constants.PRODUCT_INVENTORY_STORE));
         }
     }
 

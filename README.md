@@ -40,8 +40,6 @@ This repository contains a Spring Boot microservices project.
     * docker-compose -f kafka-compose.yaml up 
 * Compile 
     * mvn clean package
-* Run the products service
-    - 
 
 * Integration tests
     - test suite utilizes the python requests module to invoke the Lambda function via the API Gateway resouce & method

@@ -15,11 +15,12 @@
     <modules>
         <module>avro-schema</module>
         <module>event-producer</module>
-        <module>break-service</module>
-        <module>purchase-views</module>
+        <module>orders-validation-service</module>
+        <module>inventory-service</module>
+<!--        <module>inventory-service</module>-->
+<!--        <module>break-service</module>-->
+<!--        <module>purchase-views</module>-->
 <!--        <module>processing-service</module>-->
 
     </modules>
-
-
 </project>

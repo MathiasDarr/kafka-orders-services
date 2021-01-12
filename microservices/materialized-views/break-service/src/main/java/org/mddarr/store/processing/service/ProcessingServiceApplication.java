@@ -32,7 +32,6 @@ public class ProcessingServiceApplication {
 	public Consumer<KStream<String, AvroPurchaseEvent>> process_purchase_events() {
 		return (purchaseEventKStream -> {
 
-
 			purchaseEventKStream.foreach((k,v)->{
 				System.out.println("THE PROUDCT IS " + v.getProductid() + " and the key is " + k);
 			});
@@ -48,7 +47,6 @@ public class ProcessingServiceApplication {
 
 			KGroupedStream<String, AvroPurchaseEvent> groupedByProductID = purchaseEventKStream.groupBy((key, value)->key, Grouped.with(Serdes.String(),avroInventorySerde));
 
-
 			purchaseEventKStream.foreach((k,v)->{
 				System.out.println("THE PROUDCT2 IS " + v.getProductid());
 			});
@@ -60,7 +58,6 @@ public class ProcessingServiceApplication {
 			productPurchaseCountsTable.toStream().foreach((k,v) -> {
 				System.out.println("THE PURCHASE COUNT TABLE LOOIKS LIKE " + k + " and the number of purchases is " + v);
 			} );
-
 
 		});
 
